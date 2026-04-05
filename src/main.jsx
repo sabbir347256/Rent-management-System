@@ -8,6 +8,7 @@ import { HelmetProvider } from "react-helmet-async";
 import Root from "./components/pages/Root/Root.jsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "./components/pages/HomeComponents/Home.jsx";
+import PropertyPage from "./components/pages/Properties/PropertyPage.jsx";
 
 const queryClient = new QueryClient();
 
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Home></Home>,
+      },
+      {
+        path: "/properties",
+        element: <PropertyPage></PropertyPage>,
       },
     ],
   },
