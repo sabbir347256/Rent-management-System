@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&display=swap');
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@plugin "daisyui";
+
+
+.interFont{
+  font-family: "Inter Tight", sans-serif;
+}
+
+
+
+
+
+
+.dynamic-Padding{
+  padding: 112px 10px 112px 10px;
+}
+
+.mobileResponsiveDynamicPM{
+  padding: 20px 16px 20px 16px;
+}
+
+
+
+.container {
+  @apply max-w-[1440px] mx-auto px-4 md:px-0;
+}
+
+
+@layer components {
+  .cp {
+    @apply px-4 md:px-20;
+  }
+}
+
+
