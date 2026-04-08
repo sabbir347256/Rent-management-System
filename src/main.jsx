@@ -9,6 +9,7 @@ import Root from "./components/pages/Root/Root.jsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "./components/pages/HomeComponents/Home.jsx";
 import PropertyPage from "./components/pages/Properties/PropertyPage.jsx";
+import About from "./components/pages/About/About.jsx";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
         path: "/properties",
         element: <PropertyPage></PropertyPage>,
       },
+      {
+        path : "/about",
+        element : <About></About>
+      }
     ],
   },
 ]);
