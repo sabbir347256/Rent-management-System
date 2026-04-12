@@ -10,6 +10,10 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "./components/pages/HomeComponents/Home.jsx";
 import PropertyPage from "./components/pages/Properties/PropertyPage.jsx";
 import About from "./components/pages/About/About.jsx";
+import ManagerDashboard from "./components/pages/ManagerAndAdmin/Manager/ManagerDashboard.jsx";
+import AdminDashboard from "./components/pages/ManagerAndAdmin/Admin/AdminDashboard.jsx";
+import AddProperty from "./components/pages/ManagerAndAdmin/Manager/AddProperty.jsx";
+import PropertyBookings from "./components/pages/ManagerAndAdmin/Manager/PropertyBookings.jsx";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +33,26 @@ const router = createBrowserRouter([
       {
         path : "/about",
         element : <About></About>
+      }
+      ,
+      {
+        path : "/manager-dashboard",
+        element : <ManagerDashboard></ManagerDashboard>
+      }
+      ,
+      {
+        path : "/admin-dashboard",
+        element : <AdminDashboard></AdminDashboard>
+      }
+      ,
+      {
+        path : "/add-property",
+        element : <AddProperty></AddProperty>
+      }
+      ,
+      {
+        path : "/bookings",
+        element : <PropertyBookings></PropertyBookings>
       }
     ],
   },

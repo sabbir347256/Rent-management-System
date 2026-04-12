@@ -32,7 +32,7 @@ const Navbar = () => {
       icon: <FaChartLine />,
     },
     { name: "About", path: "/about", icon: <FaInfoCircle /> },
-    { name: "Manager", path: "/manager-login", icon: <FaUserShield /> },
+    // { name: "Manager", path: "/manager-login", icon: <FaUserShield /> },
   ];
   return (
     <nav
