@@ -75,9 +75,11 @@ const Navbar = () => {
           </div>
 
           <div className="hidden md:flex items-center space-x-3">
-            <button className="text-white font-medium hover:text-blue-600 transition">
+            <NavLink to='/login'>
+              <button className="text-white font-medium hover:text-blue-600 transition">
               Login
             </button>
+            </NavLink>
             <button className="bg-gray-900 text-white px-6 py-2 rounded-full hover:bg-blue-600 shadow-lg hover:shadow-blue-200 transition-all active:scale-95">
               Get Started
             </button>

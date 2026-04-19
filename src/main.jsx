@@ -14,6 +14,9 @@ import ManagerDashboard from "./components/pages/ManagerAndAdmin/Manager/Manager
 import AdminDashboard from "./components/pages/ManagerAndAdmin/Admin/AdminDashboard.jsx";
 import AddProperty from "./components/pages/ManagerAndAdmin/Manager/AddProperty.jsx";
 import PropertyBookings from "./components/pages/ManagerAndAdmin/Manager/PropertyBookings.jsx";
+import PropertyDetails from "./components/pages/PropertyDetails/PropertyDetails.jsx";
+import Login from "./components/pages/Shared/Login.jsx";
+import Signup from "./components/pages/Shared/Signup.jsx";
 
 const queryClient = new QueryClient();
 
@@ -54,8 +57,21 @@ const router = createBrowserRouter([
         path : "/bookings",
         element : <PropertyBookings></PropertyBookings>
       }
+      ,
+      {
+        path : "/property-details/:id",
+        element : <PropertyDetails></PropertyDetails>
+      }
     ],
   },
+  {
+    path : "/login",
+    element : <Login></Login>
+  },
+  {
+    path : '/signup',
+    element : <Signup></Signup>
+  }
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
