@@ -1,112 +1,174 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { User, Mail, Lock, ArrowRight, ShieldCheck } from "lucide-react";
-
+import { User, Mail, Lock, ArrowRight, Phone, CreditCard, Shield, Camera } from "lucide-react";
 const Signup = () => {
+  const [loading, setLoading] = useState(false);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    console.log("Sign Up Data:", data);
+  const onSubmit = async (data) => {
+    setLoading(true);
+
+    const formData = new FormData();
+    formData.append("fullName", data.fullName);
+    formData.append("email", data.email);
+    formData.append("password", data.password);
+    formData.append("confirmPassword", data.confirmPassword);
+    formData.append("contactNo", data.contactNo);
+    formData.append("nidNo", data.nidNo);
+    formData.append("role", data.role);
+
+    if (data.profileImage[0]) {
+      formData.append("profileImage", data.profileImage[0]);
+    }
+
+    try {
+      const response = await fetch("http://localhost:5000/api/v1/user/register", {
+        method: "POST",
+        body: formData, 
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        alert("Registration Successful!");
+        console.log("Success:", result);
+      } else {
+        alert(result.message || "Registration failed");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Something went wrong!");
+    } finally {
+      setLoading(false);
+    }
   };
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white rounded-3xl shadow-xl shadow-slate-200/60 overflow-hidden border border-slate-100">
-        <div className="p-8">
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6 py-12">
+      <div className="max-w-2xl w-full bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden">
+        <div className="p-8 md:p-12">
           <div className="text-center mb-10">
-            <h1 className="text-3xl font-black text-slate-800 mb-2">
-              Create Account
-            </h1>
-            <p className="text-slate-500 text-sm">
-              Join us today and start your journey
-            </p>
+            <h1 className="text-3xl font-black text-slate-800 mb-2">Join Our Platform</h1>
+            <p className="text-slate-500">Create your account to get started</p>
           </div>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-1">
-              <label className="text-sm font-bold text-slate-700 ml-1">
-                Full Name
-              </label>
+              <label className="text-sm font-bold text-slate-700 ml-1">Full Name</label>
               <div className="relative">
                 <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                 <input
                   {...register("fullName", { required: "Name is required" })}
-                  type="text"
-                  placeholder="John Doe"
-                  className={`w-full pl-12 pr-4 py-3.5 bg-slate-50 border ${errors.fullName ? "border-red-500" : "border-slate-200"} rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all`}
+                  className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 outline-none"
+                  placeholder="Sabbir Ahmmed"
                 />
               </div>
             </div>
 
             <div className="space-y-1">
-              <label className="text-sm font-bold text-slate-700 ml-1">
-                Email Address
-              </label>
+              <label className="text-sm font-bold text-slate-700 ml-1">Email Address</label>
               <div className="relative">
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                 <input
                   {...register("email", { required: "Email is required" })}
                   type="email"
-                  placeholder="name@example.com"
-                  className={`w-full pl-12 pr-4 py-3.5 bg-slate-50 border ${errors.email ? "border-red-500" : "border-slate-200"} rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all`}
+                  className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 outline-none"
+                  placeholder="sabbir112@gmail.com"
                 />
               </div>
             </div>
 
             <div className="space-y-1">
-              <label className="text-sm font-bold text-slate-700 ml-1">
-                Password
-              </label>
+              <label className="text-sm font-bold text-slate-700 ml-1">Contact Number</label>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                 <input
-                  {...register("password", {
-                    required: "Password is required",
-                    minLength: { value: 6, message: "Min 6 characters" },
-                  })}
-                  type="password"
-                  placeholder="••••••••"
-                  className={`w-full pl-12 pr-4 py-3.5 bg-slate-50 border ${errors.password ? "border-red-500" : "border-slate-200"} rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all`}
+                  {...register("contactNo", { required: "Required" })}
+                  className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 outline-none"
+                  placeholder="01987665412"
                 />
               </div>
             </div>
 
-            <div className="flex items-start gap-2 py-2">
-              <input
-                type="checkbox"
-                className="mt-1 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
-                required
-              />
-              <p className="text-xs text-slate-500">
-                I agree to the{" "}
-                <span className="text-blue-600 font-bold">
-                  Terms of Service
-                </span>{" "}
-                and{" "}
-                <span className="text-blue-600 font-bold">Privacy Policy</span>
-              </p>
+            <div className="space-y-1">
+              <label className="text-sm font-bold text-slate-700 ml-1">NID Number</label>
+              <div className="relative">
+                <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                <input
+                  {...register("nidNo", { required: "Required" })}
+                  className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 outline-none"
+                  placeholder="1234563453"
+                />
+              </div>
             </div>
 
-            <button
-              type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-2xl shadow-lg shadow-blue-200 flex items-center justify-center gap-2 group transition-all"
-            >
-              Create Account
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </button>
-          </form>
-        </div>
+            <div className="space-y-1">
+              <label className="text-sm font-bold text-slate-700 ml-1">Password</label>
+              <div className="relative">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                <input
+                  {...register("password", { required: "Min 6 chars", minLength: 6 })}
+                  type="password"
+                  className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 outline-none"
+                  placeholder="••••••"
+                />
+              </div>
+            </div>
 
-        <div className="p-6 bg-slate-50 border-t border-slate-100 text-center">
-          <p className="text-sm text-slate-600">
-            Already have an account?{" "}
-            <button className="text-blue-600 font-bold hover:underline">
-              Log In
-            </button>
-          </p>
+            <div className="space-y-1">
+              <label className="text-sm font-bold text-slate-700 ml-1">Confirm Password</label>
+              <div className="relative">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                <input
+                  {...register("confirmPassword", { required: "Must match" })}
+                  type="password"
+                  className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 outline-none"
+                  placeholder="••••••"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-sm font-bold text-slate-700 ml-1">User Role</label>
+              <div className="relative">
+                <Shield className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                <select
+                  {...register("role")}
+                  className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 outline-none appearance-none cursor-pointer"
+                >
+                  <option value="USER">User</option>
+                  <option value="MANAGER">Manager</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-sm font-bold text-slate-700 ml-1">Profile Image</label>
+              <div className="relative">
+                <Camera className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                <input
+                  {...register("profileImage")}
+                  type="file"
+                  accept="image/*"
+                  className="w-full pl-12 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl file:hidden cursor-pointer"
+                />
+              </div>
+            </div>
+
+            <div className="md:col-span-2 py-4">
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-blue-200"
+              >
+                {loading ? "Registering..." : "Create Account"}
+                <ArrowRight className="w-5 h-5" />
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
