@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Heart,
   MapPin,
@@ -17,8 +17,38 @@ import {
   Info,
   ShieldCheckIcon,
 } from "lucide-react";
+import { useParams } from "react-router";
 
 const PropertyDetails = () => {
+
+  const { id } = useParams(); 
+  const [property, setProperty] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+  const fetchProperty = async () => {
+    try {
+      setLoading(true); 
+      
+      const response = await fetch(`http://localhost:5000/api/v1/property/${id}`);
+      
+      if (!response.ok) {
+        throw new Error("Property not found or Server Error");
+      }
+      const result = await response.json();
+      setProperty(result.data); 
+      setLoading(false);
+    } catch (error) {
+      console.error("Fetching error:", error.message);
+      setLoading(false);
+    }
+  };
+
+  if (id) fetchProperty(); 
+}, [id]);
+console.log(property)
+
+  if (loading) return <p className="text-center p-10">Loading...</p>;
   const amenities = [
     "24/7 Security",
     "Elevator",
@@ -45,7 +75,7 @@ const PropertyDetails = () => {
           <div className="rounded-2xl overflow-hidden bg-white shadow-sm">
             <div className="relative h-[400px]">
               <img
-                src="/api/placeholder/800/500"
+                src={property?.images[0]}
                 alt="Modern Apartment"
                 className="w-full h-full object-cover"
               />
@@ -54,10 +84,10 @@ const PropertyDetails = () => {
               </button>
             </div>
             <div className="grid grid-cols-4 gap-2 p-2">
-              {[1, 2, 3, 4].map((i) => (
+              {property?.images?.map((i) => (
                 <img
                   key={i}
-                  src="/api/placeholder/200/150"
+                  src={i}
                   alt="thumb"
                   className="rounded-lg cursor-pointer hover:opacity-80 transition"
                 />

@@ -1,8 +1,19 @@
 import React from 'react';
 import { FiGrid, FiList } from 'react-icons/fi';
 import SingleCard from '../HomeComponents/HomeCards/SingleCard';
+import { useQuery } from '@tanstack/react-query';
 
 const PropertyListing = ({properties}) => {
+   const { data: property = [], isLoading, refetch } = useQuery({
+    queryKey: ['GET'],
+    queryFn: () => {
+      return fetch('http://localhost:5000/api/v1/property')
+        .then(res => res.json())
+        .then(data => {
+          return data;
+        })
+    }
+  });
     
     return (
       <div className="flex-1">
@@ -25,7 +36,7 @@ const PropertyListing = ({properties}) => {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-        {properties.map((property) => (
+        {property?.data?.map((property) => (
           <SingleCard key={property.id} data={property} />
         ))}
       </div>
