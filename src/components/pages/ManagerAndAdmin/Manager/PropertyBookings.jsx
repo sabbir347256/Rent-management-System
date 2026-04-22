@@ -202,7 +202,7 @@ const PropertyBookings = () => {
                 <Clock className="w-10 h-10 text-slate-300" />
               </div>
               <p className="text-slate-400 font-bold text-lg">
-                No bookings found for your criteria.
+                No bookings found for your criteria
               </p>
             </div>
           )}
