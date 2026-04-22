@@ -1,13 +1,29 @@
+import {  useMemo, useState } from "react";
 import { AuthProvider } from "./CreateContext";
+import { jwtDecode } from "jwt-decode";
 
 const AuthContext = ({ children }) => {
-  const siteInfo = {
-    user : 'lakdsf',
-    logout : '',
+  const [token, setToken] = useState(() => localStorage.getItem("accessToken"));
+
+  const user = useMemo(() => {
+    if (!token) return null;
+    try {
+      return jwtDecode(token);
+    } catch (error) {
+      console.error("JWT Decode Error:", error);
+      return null;
+    }
+  }, [token]);
+
+
+  const authInfo = {
+    setToken,
+    user,
+    role: user?.role
   };
 
   return (
-    <AuthProvider.Provider value={siteInfo}>{children}</AuthProvider.Provider>
+    <AuthProvider.Provider value={authInfo}>{children}</AuthProvider.Provider>
   );
 };
 

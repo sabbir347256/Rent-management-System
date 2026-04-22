@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   FaBars,
   FaBuilding,
@@ -9,12 +9,14 @@ import {
   FaUserShield,
 } from "react-icons/fa";
 import { NavLink } from "react-router";
+import { AuthProvider } from "../../../AuthProvider/CreateContext";
+import { LogIn, ShieldCheck, User } from "lucide-react";
 
 const Navbar = () => {
+  const { user, role } = useContext(AuthProvider);
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
-  // Efek scroll untuk navbar transparan ke solid
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
@@ -75,14 +77,37 @@ const Navbar = () => {
           </div>
 
           <div className="hidden md:flex items-center space-x-3">
-            <NavLink to='/login'>
-              <button className="text-white font-medium hover:text-blue-600 transition">
-              Login
-            </button>
-            </NavLink>
-            <button className="bg-gray-900 text-white px-6 py-2 rounded-full hover:bg-blue-600 shadow-lg hover:shadow-blue-200 transition-all active:scale-95">
+            {user ? (
+              <>
+                {role === "MANAGER" && (
+                  <NavLink to="/manager-dashboard">
+                    <button className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-xl shadow-lg shadow-blue-200 hover:shadow-blue-300 hover:scale-105 transition-all duration-300 border border-blue-400/20">
+                      <User className="w-4 h-4" />
+                      Manager Profile
+                    </button>
+                  </NavLink>
+                )}
+
+                {role === "ADMIN" && (
+                  <NavLink to="/admin-dashboard">
+                    <button className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-slate-800 to-slate-900 text-white font-bold rounded-xl shadow-lg shadow-slate-300 hover:shadow-slate-400 hover:scale-105 transition-all duration-300 border border-slate-700">
+                      <ShieldCheck className="w-4 h-4 text-amber-400" />
+                      Admin Panel
+                    </button>
+                  </NavLink>
+                )}
+              </>
+            ) : (
+              <NavLink to="/login">
+                <button className="flex items-center gap-2 px-8 py-2.5 bg-white text-blue-600 font-bold rounded-xl border-2 border-blue-600 hover:bg-blue-50 hover:shadow-md transition-all duration-300">
+                  <LogIn className="w-4 h-4" />
+                  Login
+                </button>
+              </NavLink>
+            )}
+            {/* <button className="bg-gray-900 text-white px-6 py-2 rounded-full hover:bg-blue-600 shadow-lg hover:shadow-blue-200 transition-all active:scale-95">
               Get Started
-            </button>
+            </button> */}
           </div>
 
           <div className="md:hidden">

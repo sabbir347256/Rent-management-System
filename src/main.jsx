@@ -17,6 +17,7 @@ import PropertyBookings from "./components/pages/ManagerAndAdmin/Manager/Propert
 import PropertyDetails from "./components/pages/PropertyDetails/PropertyDetails.jsx";
 import Login from "./components/pages/Shared/Login.jsx";
 import Signup from "./components/pages/Shared/Signup.jsx";
+import MyProperties from "./components/pages/ManagerAndAdmin/Manager/MyProperties.jsx";
 
 const queryClient = new QueryClient();
 
@@ -61,6 +62,11 @@ const router = createBrowserRouter([
       {
         path : "/property-details/:id",
         element : <PropertyDetails></PropertyDetails>
+      }
+      ,
+      {
+        path : "/my-properties",
+        element : <MyProperties></MyProperties>
       }
     ],
   },

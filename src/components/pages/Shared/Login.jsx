@@ -1,10 +1,12 @@
 import { ArrowRight, Lock, Mail } from "lucide-react";
 import React from "react";
 import { useForm } from "react-hook-form";
+import toast, { Toaster } from "react-hot-toast";
 import { BsGoogle } from "react-icons/bs";
 import { DiChrome } from "react-icons/di";
 import { GiThunderBlade } from "react-icons/gi";
-import { NavLink } from "react-router";
+import { NavLink, useNavigate } from "react-router";
+import { AuthProvider } from "../../../AuthProvider/CreateContext";
 
 const Login = () => {
   const {
@@ -13,11 +15,40 @@ const Login = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    console.log("Login Data:", data);
+  const navigate = useNavigate();
+
+  const onSubmit = async (data) => {
+    const loadingToast = toast.loading("Logging in...");
+    try {
+      const response = await fetch("http://localhost:5000/api/v1/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+      console.log(result)
+
+      if (response.ok && result.data?.accessToken) {
+        localStorage.setItem("accessToken", result.data.accessToken);
+        toast.success(`${result.message}`, { id: loadingToast });
+        setTimeout(() => {
+          navigate("/");
+        }, 1000);
+      } else {
+        toast.error(result.message || "Invalid credentials", {
+          id: loadingToast,
+        });
+      }
+    } catch (error) {
+      toast.error("Something went wrong",error, { id: loadingToast });
+    }
   };
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+      <Toaster position="top-center" reverseOrder={false} />
       <div className="max-w-md w-full bg-white rounded-3xl shadow-xl shadow-slate-200/60 overflow-hidden border border-slate-100">
         <div className="p-8">
           <div className="text-center mb-10">
@@ -40,7 +71,9 @@ const Login = () => {
                   {...register("email", { required: "Email is required" })}
                   type="email"
                   placeholder="name@example.com"
-                  className={`w-full pl-12 pr-4 py-3.5 bg-slate-50 border ${errors.email ? "border-red-500" : "border-slate-200"} rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all`}
+                  className={`w-full pl-12 pr-4 py-3.5 bg-slate-50 border ${
+                    errors.email ? "border-red-500" : "border-slate-200"
+                  } rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all`}
                 />
               </div>
               {errors.email && (
@@ -70,7 +103,9 @@ const Login = () => {
                   })}
                   type="password"
                   placeholder="••••••••"
-                  className={`w-full pl-12 pr-4 py-3.5 bg-slate-50 border ${errors.password ? "border-red-500" : "border-slate-200"} rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all`}
+                  className={`w-full pl-12 pr-4 py-3.5 bg-slate-50 border ${
+                    errors.password ? "border-red-500" : "border-slate-200"
+                  } rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all`}
                 />
               </div>
               {errors.password && (
@@ -104,20 +139,17 @@ const Login = () => {
             <button className="flex items-center justify-center gap-2 py-3 border border-slate-200 rounded-2xl hover:bg-slate-50 transition-colors font-semibold text-slate-700">
               <BsGoogle className="w-5 h-5 text-red-500" /> Google
             </button>
-            {/* <button className="flex items-center justify-center gap-2 py-3 border border-slate-200 rounded-2xl hover:bg-slate-50 transition-colors font-semibold text-slate-700">
-              <GiThunderBlade className="w-5 h-5" /> GitHub
-            </button> */}
           </div>
         </div>
 
         <div className="p-6 bg-slate-50 border-t border-slate-100 text-center">
           <p className="text-sm text-slate-600">
             Don't have an account?{" "}
-           <NavLink to='/signup'>
-             <button className="text-blue-600 font-bold hover:underline">
-              Sign Up
-            </button>
-           </NavLink>
+            <NavLink to="/signup">
+              <button className="text-blue-600 font-bold hover:underline">
+                Sign Up
+              </button>
+            </NavLink>
           </p>
         </div>
       </div>

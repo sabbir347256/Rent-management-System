@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Heart,
   MapPin,
@@ -16,37 +16,94 @@ import {
   Zap,
   Info,
   ShieldCheckIcon,
+  X,
 } from "lucide-react";
 import { useParams } from "react-router";
+import { useForm } from "react-hook-form";
+import toast, { Toaster } from "react-hot-toast";
+import { AuthProvider } from "../../../AuthProvider/CreateContext";
 
 const PropertyDetails = () => {
-
-  const { id } = useParams(); 
+  const {user} = useContext(AuthProvider);
+  console.log(user)
+  const { id } = useParams();
   const [property, setProperty] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
 
   useEffect(() => {
-  const fetchProperty = async () => {
-    try {
-      setLoading(true); 
-      
-      const response = await fetch(`http://localhost:5000/api/v1/property/${id}`);
-      
-      if (!response.ok) {
-        throw new Error("Property not found or Server Error");
+    const fetchProperty = async () => {
+      try {
+        setLoading(true);
+
+        const response = await fetch(
+          `http://localhost:5000/api/v1/property/${id}`,
+        );
+
+        if (!response.ok) {
+          throw new Error("Property not found or Server Error");
+        }
+        const result = await response.json();
+        setProperty(result.data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Fetching error:", error.message);
+        setLoading(false);
       }
+    };
+
+    if (id) fetchProperty();
+  }, [id]);
+
+  console.log(property)
+
+  const onBookingSubmit = async (data) => {
+    const token = localStorage.getItem("accessToken");
+    const loadingToast = toast.loading("Sending request...");
+    try {
+      const bookingData = {
+        userName: data.userName,
+        userEmail: data.userEmail,
+        userPhone: data.userPhone,
+        propertyId: id,
+        userID : user.userId
+      };
+
+      const response = await fetch(
+        "http://localhost:5000/api/v1/booking/property",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(bookingData),
+        },
+      );
+
       const result = await response.json();
-      setProperty(result.data); 
-      setLoading(false);
+
+      if (response.ok) {
+        toast.success("Booking request sent successfully!", {
+          id: loadingToast,
+        });
+        setIsModalOpen(false);
+        reset();
+      } else {
+        toast.error(result.message || "Failed to send request", {
+          id: loadingToast,
+        });
+      }
     } catch (error) {
-      console.error("Fetching error:", error.message);
-      setLoading(false);
+      toast.error("Something went wrong", error, { id: loadingToast });
     }
   };
-
-  if (id) fetchProperty(); 
-}, [id]);
-console.log(property)
 
   if (loading) return <p className="text-center p-10">Loading...</p>;
   const amenities = [
@@ -70,6 +127,7 @@ console.log(property)
   ];
   return (
     <div className="p-4 lg:p-8 bg-gray-50 min-h-screen container">
+      <Toaster />
       <div className="flex flex-col lg:flex-row gap-8 mt-20 pb-20">
         <div className="w-full lg:w-2/3 space-y-6">
           <div className="rounded-2xl overflow-hidden bg-white shadow-sm">
@@ -220,8 +278,12 @@ console.log(property)
               </div>
 
               <div className="space-y-3">
-                <button className="w-full bg-blue-600 text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-blue-700 transition shadow-lg shadow-blue-200">
-                  <MessageSquare className="w-5 h-5" /> Contact Owner
+                <button
+                  onClick={() => setIsModalOpen(true)}
+                  className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black flex items-center justify-center gap-2 hover:bg-blue-700 transition shadow-lg shadow-blue-200 group"
+                >
+                  <MessageSquare className="w-5 h-5 group-hover:scale-110 transition" />{" "}
+                  Contact Owner
                 </button>
                 <button className="w-full border-2 border-blue-600 text-blue-600 py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-blue-50 transition">
                   <Calendar className="w-5 h-5" /> Schedule Visit
@@ -305,6 +367,96 @@ console.log(property)
           </div>
         </div>
       </div>
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+          <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+              <h3 className="text-xl font-black text-slate-800">
+                Inquiry Form
+              </h3>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="p-2 hover:bg-white rounded-full transition text-slate-400 hover:text-red-500"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            <form
+              onSubmit={handleSubmit(onBookingSubmit)}
+              className="p-8 space-y-4"
+            >
+              <div className="space-y-1">
+                <label className="text-xs font-black text-slate-500 uppercase ml-1">
+                  Full Name
+                </label>
+                <input
+                  {...register("userName", { required: "Name is required" })}
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-medium"
+                  placeholder="Enter your name"
+                />
+                {errors.userName && (
+                  <p className="text-[10px] text-red-500 ml-1 font-bold">
+                    {errors.userName.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-black text-slate-500 uppercase ml-1">
+                  Email Address
+                </label>
+                <input
+                  {...register("userEmail", { required: "Email is required" })}
+                  type="email"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-medium"
+                  placeholder="example@mail.com"
+                />
+                {errors.userEmail && (
+                  <p className="text-[10px] text-red-500 ml-1 font-bold">
+                    {errors.userEmail.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-black text-slate-500 uppercase ml-1">
+                  Phone Number
+                </label>
+                <input
+                  {...register("userPhone", { required: "Phone is required" })}
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-medium"
+                  placeholder="017XXXXXXXX"
+                />
+                {errors.userPhone && (
+                  <p className="text-[10px] text-red-500 ml-1 font-bold">
+                    {errors.userPhone.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-black text-slate-500 uppercase ml-1">
+                  Message (Optional)
+                </label>
+                <textarea
+                  {...register("message")}
+                  rows="3"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-medium resize-none"
+                  placeholder="Any specific questions?"
+                ></textarea>
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black shadow-lg shadow-blue-200 hover:bg-blue-700 transition-all"
+              >
+                Send Request
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
