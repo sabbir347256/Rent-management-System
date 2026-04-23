@@ -1,4 +1,5 @@
 import React from "react";
+import { NavLink } from "react-router";
 
 const AdminDashboard = () => {
   const stats = [
@@ -67,12 +68,12 @@ const AdminDashboard = () => {
   ];
 
   const actions = [
-    { title: "Manager Approvals", subtitle: "0 pending", icon: "🤵" },
-    { title: "Property Approvals", subtitle: "0 pending", icon: "🏘️" },
-    { title: "Manage Users", subtitle: "View all users", icon: "👥" },
-    { title: "All Properties", subtitle: "Manage listings", icon: "🏠" },
-    { title: "All Bookings", subtitle: "Monitor bookings", icon: "📅" },
-    { title: "All Managers", subtitle: "Manage managers", icon: "🏢" },
+    { title: "Manager Approvals", path : "/pending-manager", subtitle: "0 pending", icon: "🤵" },
+    { title: "Property Approvals", path : "/all-property", subtitle: "0 pending", icon: "🏘️" },
+    { title: "Manage Users", path : "", subtitle: "View all users", icon: "👥" },
+    { title: "All Properties", path : "/all-type-property", subtitle: "Manage listings", icon: "🏠" },
+    { title: "All Bookings", path : "", subtitle: "Monitor bookings", icon: "📅" },
+    { title: "All Managers", path : "", subtitle: "Manage managers", icon: "🏢" },
   ];
   return (
     <div className="min-h-screen bg-slate-50 p-6 md:p-10  text-slate-900">
@@ -124,9 +125,10 @@ const AdminDashboard = () => {
             Quick Actions
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {actions.map((action, idx) => (
-              <div
-                key={idx}
+            {actions?.map((action, idx) => (
+             <NavLink to={action?.path} key={idx}>
+               <div
+               
                 className="flex flex-col items-center justify-center p-6 bg-white rounded-xl shadow-sm border border-slate-100 hover:shadow-md transition-all cursor-pointer group"
               >
                 <div className="text-3xl mb-3 group-hover:scale-110 transition-transform">
@@ -139,6 +141,7 @@ const AdminDashboard = () => {
                   {action.subtitle}
                 </p>
               </div>
+             </NavLink>
             ))}
           </div>
         </section>

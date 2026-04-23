@@ -18,6 +18,9 @@ import PropertyDetails from "./components/pages/PropertyDetails/PropertyDetails.
 import Login from "./components/pages/Shared/Login.jsx";
 import Signup from "./components/pages/Shared/Signup.jsx";
 import MyProperties from "./components/pages/ManagerAndAdmin/Manager/MyProperties.jsx";
+import PendingManager from "./components/pages/ManagerAndAdmin/Admin/PendingManager.jsx";
+import AllProperty from "./components/pages/ManagerAndAdmin/Admin/AllProperty.jsx";
+import AlltypeProperties from "./components/pages/ManagerAndAdmin/Admin/AlltypeProperties.jsx";
 
 const queryClient = new QueryClient();
 
@@ -67,6 +70,21 @@ const router = createBrowserRouter([
       {
         path : "/my-properties",
         element : <MyProperties></MyProperties>
+      }
+      ,
+      {
+        path : "/pending-manager",
+        element : <PendingManager></PendingManager>
+      }
+      ,
+      {
+        path : "/all-property",
+        element : <AllProperty></AllProperty>
+      }
+      ,
+      {
+        path : "/all-type-property",
+        element : <AlltypeProperties></AlltypeProperties>
       }
     ],
   },
