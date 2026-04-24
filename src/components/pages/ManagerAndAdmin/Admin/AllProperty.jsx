@@ -1,26 +1,39 @@
-import React from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import React, { useEffect, useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import PageHeader from "../../../utils/PageHeader";
 
 const AllProperty = () => {
   const queryClient = useQueryClient();
 
-  const {
-    data: properties,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ["properties"],
+  const [inputValue, setInputValue] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(1);
+  const limit = 10;
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      setSearchTerm(inputValue);
+      setPage(1);
+    }, 500);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [inputValue]);
+
+  const { data: response, isLoading } = useQuery({
+    queryKey: ["propertyApprovals", searchTerm, page],
     queryFn: async () => {
       const token = localStorage.getItem("accessToken");
-      const response = await fetch("http://localhost:5000/api/v1/property/allproperty", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+      const res = await fetch(
+        `http://localhost:5000/api/v1/property/allproperty?searchTerm=${searchTerm}&page=${page}&limit=${limit}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         },
-      });
-      if (!response.ok) throw new Error("Failed to fetch");
-      const result = await response.json();
-      return result.data;
+      );
+      if (!res.ok) throw new Error("Failed to fetch");
+      return res.json();
     },
   });
 
@@ -50,14 +63,25 @@ const AllProperty = () => {
     return (
       <div className="p-10 text-center font-bold">Loading properties...</div>
     );
-  if (isError)
-    return (
-      <div className="p-10 text-red-500 text-center">
-        Error fetching properties
-      </div>
-    );
+
+  const meta = response?.meta || {};
+
   return (
-    <div className="container mx-auto p-6 min-h-screen pt-32">
+    <div className="min-h-screen">
+      <PageHeader title={"Property Approval"}></PageHeader>
+      <div className="mb-6 flex justify-between items-center  border-gray-100">
+        <input
+          type="text"
+          placeholder="Search by name or email..."
+          className="w-full max-w-md px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-all"
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+        />
+        <div className="hidden sm:block text-sm font-semibold text-gray-400 uppercase tracking-wider">
+          Total Results: {meta.total || 0}
+        </div>
+      </div>
+
       <div className="overflow-hidden shadow-lg rounded-xl border border-gray-200">
         <table className="min-w-full bg-white text-left">
           <thead className="bg-gray-50 border-b border-gray-200">
@@ -80,7 +104,7 @@ const AllProperty = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
-            {properties?.map((item) => (
+            {response?.data?.map((item) => (
               <tr key={item._id} className="hover:bg-gray-50 transition-colors">
                 <td className="px-6 py-4 text-sm font-semibold text-gray-800">
                   {item.propertyTitle}
@@ -121,6 +145,25 @@ const AllProperty = () => {
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="mt-8 flex justify-center items-center gap-2 pb-12">
+        <button
+          className="px-4 py-2 text-sm font-bold text-gray-500 bg-white border border-gray-200 rounded-lg hover:bg-emerald-600 hover:text-white disabled:opacity-30 transition-all shadow-sm"
+          disabled={page === 1}
+          onClick={() => setPage((p) => Math.max(p - 1, 1))}
+        >
+          Prev
+        </button>
+        <span className="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-bold shadow-md">
+          {page}
+        </span>
+        <button
+          className="px-4 py-2 text-sm font-bold text-gray-500 bg-white border border-gray-200 rounded-lg hover:bg-emerald-600 hover:text-white disabled:opacity-30 transition-all shadow-sm"
+          disabled={page >= (meta.totalPage || 1)}
+          onClick={() => setPage((p) => p + 1)}
+        >
+          Next
+        </button>
       </div>
     </div>
   );

@@ -27,6 +27,8 @@ import {
   ChevronDown,
   Package,
   LucideMoveDiagonal2,
+  User2,
+  Home,
 } from "lucide-react";
 import { NavLink, Outlet } from "react-router";
 import SliderItem from "../../../Shared/SliderItem";
@@ -44,93 +46,104 @@ const AdminLayout = () => {
 
   const menuItems = [
     {
-      section: "OVERVIEW",
       items: [
-        { path: "/admin-dashboard/pending-manager", label: "Dashboard", icon: LayoutDashboard },
-        { path: "/pending-manager", label: "Analytics", icon: Shield },
+        { path: "/admin-dashboard", label: "Dashboard", icon: LayoutDashboard },
       ],
     },
     {
-      section: "BOOKINGS",
+      section: "Quick Action",
       items: [
         {
-          path: "/bookings",
-          label: "All Bookings",
-          icon: LayoutDashboard,
-          badge: "12",
-        },
-        { path: "/flights", label: "Flights", icon: Plane },
-        { path: "/hotels", label: "Hotels", icon: Hotel },
-        { path: "/cars", label: "Car Rentals", icon: Car },
-      ],
-    },
-    {
-      section: "Supplier",
-      items: [
-        {
-          path: "/manual-hotel-booking",
-          label: "Add Hotel",
-          icon: LayoutDashboard,
-          // badge: "12",
-        },
-        { path: "/manual-flights", label: "Add Flights", icon: Plane },
-        { path: "/manual-car", label: "Add Car", icon: Car },
-        // { path: "/cars", label: "Car Rentals", icon: Car },
-      ],
-    },
-    {
-      section: "AI PART",
-      items: [
-        {
-          path: "/manual-AI-Package",
-          label: "Add AI Package",
-          icon: Package,
-          // badge: "12",
+          path: "/admin-dashboard/property-approval",
+          label: "Property Approval",
+          icon: Home,
         },
         {
-          path: "/manual-ai-model",
-          label: "Add AI Agent",
-          icon: LucideMoveDiagonal2,
+          path: "/admin-dashboard/all-type-property",
+          label: "All Property",
+          icon: Home,
         },
-        // { path: "/manual-car", label: "Add Car", icon: Car },
-        // { path: "/cars", label: "Car Rentals", icon: Car },
-      ],
-    },
-    {
-      section: "CATALOG",
-      items: [
         {
-          path: "/experiences",
-          label: "Experiences",
-          icon: TestTubeDiagonal,
-          badge: "12",
+          path: "/admin-dashboard/manage-users",
+          label: "Manage Users",
+          icon: User2,
         },
-        { path: "/reviews", label: "Reviews", icon: Stars },
-      ],
-    },
-    {
-      section: "USERS",
-      items: [
         {
-          path: "/all-users",
-          label: "All-Users",
-          icon: Users2,
-          badge: "12",
+          path: "/admin-dashboard/pending-manager",
+          label: "Manager Approval",
+          icon: User2,
         },
-        { path: "/admin-team", label: "Admin-Team", icon: UserLock },
-      ],
-    },
-    {
-      section: "SYSTEM",
-      items: [
         {
-          path: "/promo-codes",
-          label: "Promo Codes",
-          icon: Tags,
+          path: "/admin-dashboard/all-manager",
+          label: "All Manager",
+          icon: User2,
         },
-        { path: "/settings", label: "Settings", icon: Settings2 },
       ],
     },
+    // {
+    //   section: "Supplier",
+    //   items: [
+    //     {
+    //       path: "/manual-hotel-booking",
+    //       label: "Add Hotel",
+    //       icon: LayoutDashboard,
+    //     },
+    //     { path: "/manual-flights", label: "Add Flights", icon: Plane },
+    //     { path: "/manual-car", label: "Add Car", icon: Car },
+    //   ],
+    // },
+    // {
+    //   section: "AI PART",
+    //   items: [
+    //     {
+    //       path: "/manual-AI-Package",
+    //       label: "Add AI Package",
+    //       icon: Package,
+    //       // badge: "12",
+    //     },
+    //     {
+    //       path: "/manual-ai-model",
+    //       label: "Add AI Agent",
+    //       icon: LucideMoveDiagonal2,
+    //     },
+        
+    //   ],
+    // },
+    // {
+    //   section: "CATALOG",
+    //   items: [
+    //     {
+    //       path: "/experiences",
+    //       label: "Experiences",
+    //       icon: TestTubeDiagonal,
+    //       badge: "12",
+    //     },
+    //     { path: "/reviews", label: "Reviews", icon: Stars },
+    //   ],
+    // },
+    // {
+    //   section: "USERS",
+    //   items: [
+    //     {
+    //       path: "/all-users",
+    //       label: "All-Users",
+    //       icon: Users2,
+    //       badge: "12",
+    //     },
+    //     { path: "/admin-team", label: "Admin-Team", icon: UserLock },
+    //   ],
+    // },
+    // {
+    //   section: "SYSTEM",
+    //   items: [
+    //     {
+    //       path: "/promo-codes",
+    //       label: "Promo Codes",
+    //       icon: Tags,
+    //     },
+    //     { path: "/settings", label: "Settings", icon: Settings2 },
+    //   ],
+    // },
   ];
   const [porfileopen, setporfileopen] = useState(false);
   const dropdownRef = useRef(null);
@@ -156,13 +169,13 @@ const AdminLayout = () => {
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 flex flex-col ${
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-[#0f172a] text-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 flex flex-col ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         <div className="p-6 flex items-center justify-between flex-shrink-0">
           <h1 className="text-xl font-bold text-emerald-600">
-            Pura <span className="text-amber-500">VidaX</span>
+            RentEase <span className="text-amber-500"></span>
           </h1>
           <button
             onClick={() => setIsOpen(false)}
@@ -183,6 +196,7 @@ const AdminLayout = () => {
                   <NavLink
                     key={item.label}
                     to={item.path}
+                    end={item.path === "/admin-dashboard"}
                     onClick={() => setIsOpen(false)}
                   >
                     {({ isActive }) => (

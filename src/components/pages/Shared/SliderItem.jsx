@@ -1,14 +1,14 @@
 import React from "react";
 
 const SliderItem = ({ icon: Icon, label, active, badge, onClick }) => {
-  console.log(Icon);
+//   console.log(Icon);
   return (
     <li
       onClick={onClick}
       className={`flex items-center justify-between px-4 py-2.5 cursor-pointer transition-all ${
         active
           ? "bg-emerald-100 text-emerald-700 font-semibold"
-          : "hover:bg-[#f0f4f3]"
+          : "hover:bg-[#f0f4f3] hover:text-black"
       }`}
     >
       <div className="flex items-center gap-3">

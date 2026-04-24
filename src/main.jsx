@@ -24,6 +24,7 @@ import AlltypeProperties from "./components/pages/ManagerAndAdmin/Admin/AlltypeP
 import Allusers from "./components/pages/ManagerAndAdmin/Admin/Allusers.jsx";
 import AllManager from "./components/pages/ManagerAndAdmin/Admin/AllManager.jsx";
 import AdminLayout from "./components/pages/ManagerAndAdmin/Admin/AdminLayout/AdminLayout.jsx";
+import Dashboard from "./components/pages/ManagerAndAdmin/Admin/Dashboard/Dashboard.jsx";
 
 const queryClient = new QueryClient();
 
@@ -66,20 +67,8 @@ const router = createBrowserRouter([
       },
 
       {
-        path: "/manage-users",
-        element: <Allusers></Allusers>,
-      },
-      {
-        path: "/all-manager",
-        element: <AllManager></AllManager>,
-      },
-      {
-        path: "/all-property",
-        element: <AllProperty></AllProperty>,
-      },
-      {
-        path: "/all-type-property",
-        element: <AlltypeProperties></AlltypeProperties>,
+        path: "/dashboard",
+        element: <AdminDashboard></AdminDashboard>,
       },
     ],
   },
@@ -89,11 +78,28 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <AdminDashboard></AdminDashboard>,
+        element: <Dashboard></Dashboard>,
       },
       {
         path: "pending-manager",
         element: <PendingManager></PendingManager>,
+      },
+
+      {
+        path: "manage-users",
+        element: <Allusers></Allusers>,
+      },
+      {
+        path: "property-approval",
+        element: <AllProperty></AllProperty>,
+      },
+      {
+        path: "all-type-property",
+        element: <AlltypeProperties></AlltypeProperties>,
+      },
+      {
+        path: "all-manager",
+        element: <AllManager></AllManager>,
       },
     ],
   },

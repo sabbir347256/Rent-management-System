@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import PageHeader from "../../../utils/PageHeader";
 const Allusers = () => {
   const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState("");
@@ -57,7 +58,8 @@ const Allusers = () => {
   const meta = response?.meta || {};
 
   return (
-    <div className="p-6 min-h-screen container mx-auto pt-28">
+    <div className="min-h-screen">
+        <PageHeader title={'Manage Users'}></PageHeader>
       <div className="mb-6 flex justify-between items-center">
         <input
           type="text"

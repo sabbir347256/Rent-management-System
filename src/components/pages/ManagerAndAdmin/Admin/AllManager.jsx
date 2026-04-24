@@ -1,11 +1,22 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import PageHeader from "../../../utils/PageHeader";
 
 const AllManager = () => {
   const queryClient = useQueryClient();
+  const [inputValue, setInputValue] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
   const limit = 50;
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      setSearchTerm(inputValue);
+      setPage(1);
+    }, 500);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [inputValue]);
 
   const getHeaders = () => {
     const token = localStorage.getItem("accessToken");
@@ -47,27 +58,25 @@ const AllManager = () => {
     },
   });
 
-  const handleSearch = (e) => {
-    setSearchTerm(e.target.value);
-    setPage(1);
-  };
+
 
   if (isLoading)
     return <div className="p-10 text-center font-bold">Loading...</div>;
 
   const meta = response?.meta || {};
   return (
-    <div className="p-6 min-h-screen container mx-auto pt-28">
-      <div className="mb-6 flex justify-between items-center">
+    <div className="min-h-screen">
+        <PageHeader title={'All Manager'}></PageHeader>
+      <div className="mb-6 flex justify-between items-center   border border-gray-100">
         <input
           type="text"
-          placeholder="Search by name, email..."
-          className="w-full max-w-md px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm"
-          value={searchTerm}
-          onChange={handleSearch}
+          placeholder="Search by name or email..."
+          className="w-full max-w-md px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-all"
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
         />
-        <div className="text-sm font-medium text-gray-500">
-          Total Users: {meta.total || 0}
+        <div className="hidden sm:block text-sm font-semibold text-gray-400 uppercase tracking-wider">
+          Total Results: {meta.total || 0}
         </div>
       </div>
 

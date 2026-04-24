@@ -6,7 +6,6 @@ const Signup = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
   } = useForm();
 
   const onSubmit = async (data) => {
