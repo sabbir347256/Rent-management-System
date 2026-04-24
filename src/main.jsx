@@ -21,6 +21,9 @@ import MyProperties from "./components/pages/ManagerAndAdmin/Manager/MyPropertie
 import PendingManager from "./components/pages/ManagerAndAdmin/Admin/PendingManager.jsx";
 import AllProperty from "./components/pages/ManagerAndAdmin/Admin/AllProperty.jsx";
 import AlltypeProperties from "./components/pages/ManagerAndAdmin/Admin/AlltypeProperties.jsx";
+import Allusers from "./components/pages/ManagerAndAdmin/Admin/Allusers.jsx";
+import AllManager from "./components/pages/ManagerAndAdmin/Admin/AllManager.jsx";
+import AdminLayout from "./components/pages/ManagerAndAdmin/Admin/AdminLayout/AdminLayout.jsx";
 
 const queryClient = new QueryClient();
 
@@ -38,64 +41,70 @@ const router = createBrowserRouter([
         element: <PropertyPage></PropertyPage>,
       },
       {
-        path : "/about",
-        element : <About></About>
-      }
-      ,
+        path: "/about",
+        element: <About></About>,
+      },
       {
-        path : "/manager-dashboard",
-        element : <ManagerDashboard></ManagerDashboard>
-      }
-      ,
+        path: "/manager-dashboard",
+        element: <ManagerDashboard></ManagerDashboard>,
+      },
       {
-        path : "/admin-dashboard",
-        element : <AdminDashboard></AdminDashboard>
-      }
-      ,
+        path: "/add-property",
+        element: <AddProperty></AddProperty>,
+      },
       {
-        path : "/add-property",
-        element : <AddProperty></AddProperty>
-      }
-      ,
+        path: "/bookings",
+        element: <PropertyBookings></PropertyBookings>,
+      },
       {
-        path : "/bookings",
-        element : <PropertyBookings></PropertyBookings>
-      }
-      ,
+        path: "/property-details/:id",
+        element: <PropertyDetails></PropertyDetails>,
+      },
       {
-        path : "/property-details/:id",
-        element : <PropertyDetails></PropertyDetails>
-      }
-      ,
+        path: "/my-properties",
+        element: <MyProperties></MyProperties>,
+      },
+
       {
-        path : "/my-properties",
-        element : <MyProperties></MyProperties>
-      }
-      ,
+        path: "/manage-users",
+        element: <Allusers></Allusers>,
+      },
       {
-        path : "/pending-manager",
-        element : <PendingManager></PendingManager>
-      }
-      ,
+        path: "/all-manager",
+        element: <AllManager></AllManager>,
+      },
       {
-        path : "/all-property",
-        element : <AllProperty></AllProperty>
-      }
-      ,
+        path: "/all-property",
+        element: <AllProperty></AllProperty>,
+      },
       {
-        path : "/all-type-property",
-        element : <AlltypeProperties></AlltypeProperties>
-      }
+        path: "/all-type-property",
+        element: <AlltypeProperties></AlltypeProperties>,
+      },
     ],
   },
   {
-    path : "/login",
-    element : <Login></Login>
+    path: "/admin-dashboard",
+    element: <AdminLayout></AdminLayout>,
+    children: [
+      {
+        index: true,
+        element: <AdminDashboard></AdminDashboard>,
+      },
+      {
+        path: "pending-manager",
+        element: <PendingManager></PendingManager>,
+      },
+    ],
   },
   {
-    path : '/signup',
-    element : <Signup></Signup>
-  }
+    path: "/login",
+    element: <Login></Login>,
+  },
+  {
+    path: "/signup",
+    element: <Signup></Signup>,
+  },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(

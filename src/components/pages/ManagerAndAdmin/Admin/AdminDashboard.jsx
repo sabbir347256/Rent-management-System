@@ -70,10 +70,10 @@ const AdminDashboard = () => {
   const actions = [
     { title: "Manager Approvals", path : "/pending-manager", subtitle: "0 pending", icon: "🤵" },
     { title: "Property Approvals", path : "/all-property", subtitle: "0 pending", icon: "🏘️" },
-    { title: "Manage Users", path : "", subtitle: "View all users", icon: "👥" },
+    { title: "Manage Users", path : "/manage-users", subtitle: "View all users", icon: "👥" },
     { title: "All Properties", path : "/all-type-property", subtitle: "Manage listings", icon: "🏠" },
     { title: "All Bookings", path : "", subtitle: "Monitor bookings", icon: "📅" },
-    { title: "All Managers", path : "", subtitle: "Manage managers", icon: "🏢" },
+    { title: "All Managers", path : "/all-manager", subtitle: "Manage managers", icon: "🏢" },
   ];
   return (
     <div className="min-h-screen bg-slate-50 p-6 md:p-10  text-slate-900">
