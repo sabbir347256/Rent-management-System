@@ -19,13 +19,14 @@ import {
   X,
 } from "lucide-react";
 import { useParams } from "react-router";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
 import { AuthProvider } from "../../../AuthProvider/CreateContext";
+import DatePicker from "react-datepicker";
 
 const PropertyDetails = () => {
-  const {user} = useContext(AuthProvider);
-  console.log(user)
+  const { user } = useContext(AuthProvider);
+  console.log(user);
   const { id } = useParams();
   const [property, setProperty] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -61,7 +62,7 @@ const PropertyDetails = () => {
     if (id) fetchProperty();
   }, [id]);
 
-  console.log(property)
+  console.log(property);
 
   const onBookingSubmit = async (data) => {
     const token = localStorage.getItem("accessToken");
@@ -71,8 +72,9 @@ const PropertyDetails = () => {
         userName: data.userName,
         userEmail: data.userEmail,
         userPhone: data.userPhone,
+        visitDate: data.visitDate,
         propertyId: id,
-        userID : user.userId
+        userID: user.userId,
       };
 
       const response = await fetch(
@@ -285,9 +287,9 @@ const PropertyDetails = () => {
                   <MessageSquare className="w-5 h-5 group-hover:scale-110 transition" />{" "}
                   Contact Owner
                 </button>
-                <button className="w-full border-2 border-blue-600 text-blue-600 py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-blue-50 transition">
+                {/* <button className="w-full border-2 border-blue-600 text-blue-600 py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-blue-50 transition">
                   <Calendar className="w-5 h-5" /> Schedule Visit
-                </button>
+                </button> */}
               </div>
 
               <div className="mt-6 pt-6 border-t border-gray-100 space-y-4">
@@ -431,6 +433,31 @@ const PropertyDetails = () => {
                 {errors.userPhone && (
                   <p className="text-[10px] text-red-500 ml-1 font-bold">
                     {errors.userPhone.message}
+                  </p>
+                )}
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-black text-slate-500 uppercase ml-1">
+                  Schedule Visit (Date & Time)
+                </label>
+                <input
+                  type="datetime-local"
+                  {...register("visitDate", {
+                    required: "Date and time are required",
+                    validate: (value) => {
+                      const selectedDate = new Date(value);
+                      const now = new Date();
+                      return (
+                        selectedDate > now ||
+                        "Please select a future date and time"
+                      );
+                    },
+                  })}
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-medium text-slate-700"
+                />
+                {errors.visitDate && (
+                  <p className="text-[10px] text-red-500 ml-1 font-bold">
+                    {errors.visitDate.message}
                   </p>
                 )}
               </div>

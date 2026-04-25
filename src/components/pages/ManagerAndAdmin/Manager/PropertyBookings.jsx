@@ -90,9 +90,9 @@ const PropertyBookings = () => {
     }
   };
   return (
-    <div className="pt-16 min-h-screen bg-slate-50">
+    <div className="min-h-screen">
       <Toaster />
-      <div className="container pt-12">
+      <div className="">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <div>
             <h2 className="text-3xl font-black text-slate-800">

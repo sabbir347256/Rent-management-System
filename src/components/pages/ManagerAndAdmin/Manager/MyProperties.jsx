@@ -67,9 +67,9 @@ const MyProperties = () => {
   if (loading && !searchTerm)
     return <SkalatonTableLoader></SkalatonTableLoader>
   return (
-    <div className="p-6 bg-slate-50 min-h-screen">
+    <div className="min-h-screen">
       <Toaster />
-      <div className="container mt-20">
+      <div className="">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <h2 className="text-2xl font-black text-slate-800 flex items-center gap-2">
             <Home className="text-blue-600" /> My Properties

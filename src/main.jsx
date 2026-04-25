@@ -25,6 +25,9 @@ import Allusers from "./components/pages/ManagerAndAdmin/Admin/Allusers.jsx";
 import AllManager from "./components/pages/ManagerAndAdmin/Admin/AllManager.jsx";
 import AdminLayout from "./components/pages/ManagerAndAdmin/Admin/AdminLayout/AdminLayout.jsx";
 import Dashboard from "./components/pages/ManagerAndAdmin/Admin/Dashboard/Dashboard.jsx";
+import Allbooking from "./components/pages/ManagerAndAdmin/Admin/Allbookign/Allbooking.jsx";
+import ManagerLayout from "./components/pages/ManagerAndAdmin/Manager/ManagerLayout/ManagerLayout.jsx";
+import Profile from "./components/utils/Profile.jsx";
 
 const queryClient = new QueryClient();
 
@@ -46,16 +49,8 @@ const router = createBrowserRouter([
         element: <About></About>,
       },
       {
-        path: "/manager-dashboard",
+        path: "/manager-dashboard1",
         element: <ManagerDashboard></ManagerDashboard>,
-      },
-      {
-        path: "/add-property",
-        element: <AddProperty></AddProperty>,
-      },
-      {
-        path: "/bookings",
-        element: <PropertyBookings></PropertyBookings>,
       },
       {
         path: "/property-details/:id",
@@ -70,6 +65,7 @@ const router = createBrowserRouter([
         path: "/dashboard",
         element: <AdminDashboard></AdminDashboard>,
       },
+      
     ],
   },
   {
@@ -101,6 +97,49 @@ const router = createBrowserRouter([
         path: "all-manager",
         element: <AllManager></AllManager>,
       },
+      {
+        path: "all-booking",
+        element: <Allbooking></Allbooking>
+      },
+    ],
+  },
+  {
+    path: "/manager-dashboard",
+    element: <ManagerLayout></ManagerLayout>,
+    children: [
+      {
+        index: true,
+        element: <Dashboard></Dashboard>,
+      },
+      {
+        path: "my-property",
+        element: <MyProperties></MyProperties>,
+      },
+
+      {
+        path: "add-property",
+        element: <AddProperty></AddProperty>,
+      },
+      {
+        path: "all-bookings",
+        element: <PropertyBookings></PropertyBookings>,
+      },
+      {
+        path: "all-type-property",
+        element: <AlltypeProperties></AlltypeProperties>,
+      },
+      {
+        path: "all-manager",
+        element: <AllManager></AllManager>,
+      },
+      {
+        path: "all-booking",
+        element: <Allbooking></Allbooking>
+      },
+      {
+        path : "profile",
+        element :<Profile></Profile>
+      }
     ],
   },
   {

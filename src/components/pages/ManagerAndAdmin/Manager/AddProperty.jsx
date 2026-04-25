@@ -20,8 +20,8 @@ const AddProperty = () => {
     "flex items-center p-3 bg-gray-50/50 border border-gray-100 rounded-lg hover:bg-white hover:border-blue-200 transition-all cursor-pointer";
 
   return (
-    <div className="py-10 md:py-28 px-4 md:px-0">
-      <div className="pt-20 container p-6 md:p-10 bg-white shadow-2xl rounded-2xl border border-gray-100 py-96">
+    <div className="">
+      <div className=" ">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-12">
           <section>
             <h2 className={sectionTitle}>Basic Information</h2>
