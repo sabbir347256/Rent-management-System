@@ -31,6 +31,10 @@ const PropertyDetails = () => {
   const [property, setProperty] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [rating, setRating] = useState(0);
+  const [hover, setHover] = useState(0);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -107,64 +111,74 @@ const PropertyDetails = () => {
     }
   };
 
-  if (loading) return <p className="text-center p-10">Loading...</p>;
-  const amenities = [
-    "24/7 Security",
-    "Elevator",
-    "Parking Space",
-    "Gym",
-    "Swimming Pool",
-    "Backup Generator",
-    "CCTV Surveillance",
-    "Rooftop Garden",
-    "Intercom",
-    "Gas Connection",
-  ];
+  const handleRatingSubmit = async (value) => {
+    const token = localStorage.getItem("accessToken");
+    const loadingToast = toast.loading("Submitting rating...");
 
-  const nearbyPlaces = [
-    { name: "Banani School", dist: "0.5 km away", type: "School" },
-    { name: "Banani Hospital", dist: "1.2 km away", type: "Hospital" },
-    { name: "Shopping Mall", dist: "0.8 km away", type: "Mall" },
-    { name: "Restaurant Hub", dist: "0.3 km away", type: "Food" },
-  ];
+    try {
+      const response = await fetch(
+        "http://localhost:5000/api/v1/manager/rate",
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            managerId: property?.managerId || "65f123456789",
+            rating: value,
+          }),
+        },
+      );
+
+      const result = await response.json();
+
+      if (response.ok) {
+        toast.success("Rating updated!", { id: loadingToast });
+        setRating(value);
+      } else {
+        toast.error(result.message, { id: loadingToast });
+      }
+    } catch (error) {
+      toast.error("Failed to submit rating", { id: loadingToast }, error);
+    }
+  };
+
+  if (loading) return <p className="text-center p-10">Loading...</p>;
+ 
   return (
-    <div className="p-4 lg:p-8 bg-gray-50 min-h-screen container">
+    <div className="  min-h-screen container pt-4">
       <Toaster />
       <div className="flex flex-col lg:flex-row gap-8 mt-20 pb-20">
         <div className="w-full lg:w-2/3 space-y-6">
-          <div className="rounded-2xl overflow-hidden bg-white shadow-sm">
-            <div className="relative h-[400px]">
-              <img
-                src={property?.images[0]}
-                alt="Modern Apartment"
-                className="w-full h-full object-cover"
-              />
-              <button className="absolute top-4 right-4 p-2 bg-white rounded-full shadow-md">
-                <Heart className="w-6 h-6 text-gray-400" />
-              </button>
-            </div>
-            <div className="grid grid-cols-4 gap-2 p-2">
+          <div className="relative h-[400px]">
+            <img
+              src={property?.images[0]}
+              alt="Modern Apartment"
+              className="w-full h-full rounded-md"
+            />
+          </div>
+          <div className=" overflow-hidden bg-white shadow-sm">
+            <div className="grid grid-cols-4 gap-2">
               {property?.images?.map((i) => (
                 <img
                   key={i}
                   src={i}
                   alt="thumb"
-                  className="rounded-lg cursor-pointer hover:opacity-80 transition"
+                  className="rounded-md cursor-pointer hover:opacity-80 transition h-[200px] w-full"
                 />
               ))}
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-2xl shadow-sm space-y-4">
+          <div className="bg-white rounded-2xl shadow-sm space-y-4">
             <h1 className="text-2xl font-bold text-slate-800">
-              Modern 2 Bedroom Apartment in Prime Location
+              {property?.propertyTitle}
             </h1>
             <div className="flex items-center gap-4 text-gray-500 text-sm">
               <span className="flex items-center gap-1">
-                <MapPin className="w-4 h-4" /> House 45, Road 12, Banani, Dhaka
-              </span>
-              <span className="flex items-center gap-1 text-yellow-500">
-                <Star className="w-4 h-4 fill-current" /> 4.8 (24 reviews)
+                <MapPin className="w-4 h-4" /> {property?.area},{property?.city}
+                ,{property?.address}
               </span>
             </div>
 
@@ -173,28 +187,36 @@ const PropertyDetails = () => {
                 <Bed className="text-blue-600" />
                 <div>
                   <p className="text-xs text-gray-500">Bedrooms</p>{" "}
-                  <p className="font-bold text-blue-900 text-sm">2</p>
+                  <p className="font-bold text-blue-900 text-sm">
+                    {property?.bedroom}
+                  </p>
                 </div>
               </div>
               <div className="bg-blue-50 p-3 rounded-xl flex items-center gap-3">
                 <Bath className="text-blue-600" />
                 <div>
                   <p className="text-xs text-gray-500">Bathrooms</p>{" "}
-                  <p className="font-bold text-blue-900 text-sm">2</p>
+                  <p className="font-bold text-blue-900 text-sm">
+                    {property?.bathroom}
+                  </p>
                 </div>
               </div>
               <div className="bg-blue-50 p-3 rounded-xl flex items-center gap-3">
                 <Square className="text-blue-600" />
                 <div>
                   <p className="text-xs text-gray-500">Sq Ft</p>{" "}
-                  <p className="font-bold text-blue-900 text-sm">1200</p>
+                  <p className="font-bold text-blue-900 text-sm">
+                    {property?.squareArea}
+                  </p>
                 </div>
               </div>
               <div className="bg-blue-50 p-3 rounded-xl flex items-center gap-3">
                 <Building2 className="text-blue-600" />
                 <div>
                   <p className="text-xs text-gray-500">Type</p>{" "}
-                  <p className="font-bold text-blue-900 text-sm">Apartment</p>
+                  <p className="font-bold text-blue-900 text-sm">
+                    {property?.propertyType}
+                  </p>
                 </div>
               </div>
             </div>
@@ -202,16 +224,14 @@ const PropertyDetails = () => {
             <div>
               <h3 className="font-bold text-lg mb-2">Description</h3>
               <p className="text-gray-600 leading-relaxed">
-                Experience luxury living in this beautifully designed 2-bedroom
-                apartment located in the heart of Banani. Perfect for families
-                or professionals seeking comfort and convenience.
+                {property?.description}
               </p>
             </div>
 
             <div>
               <h3 className="font-bold text-lg mb-4">Amenities & Features</h3>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                {amenities.map((item) => (
+                {property?.amenities?.map((item) => (
                   <div
                     key={item}
                     className="flex items-center gap-2 text-sm text-gray-700 bg-gray-50 p-2 rounded-lg border border-gray-100"
@@ -221,29 +241,19 @@ const PropertyDetails = () => {
                 ))}
               </div>
             </div>
-
             <div>
-              <h3 className="font-bold text-lg mb-4">Nearby Places</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {nearbyPlaces.map((place) => (
+              <h3 className="font-bold text-lg mb-4">Features</h3>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                {property?.features?.map((item) => (
                   <div
-                    key={place.name}
-                    className="flex justify-between items-center p-3 bg-gray-50 rounded-xl"
+                    key={item}
+                    className="flex items-center gap-2 text-sm text-gray-700 bg-gray-50 p-2 rounded-lg border border-gray-100"
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-sm">
-                        🏫
-                      </div>
-                      <div>
-                        <p className="font-semibold text-sm">{place.name}</p>
-                        <p className="text-xs text-gray-500">{place.dist}</p>
-                      </div>
-                    </div>
+                    <ShieldCheck className="w-4 h-4 text-emerald-500" /> {item}
                   </div>
                 ))}
               </div>
             </div>
-
             <div className="pt-4">
               <h3 className="font-bold text-lg mb-4">Location</h3>
               <div className="w-full h-64 bg-blue-50 rounded-2xl border-2 border-dashed border-blue-200 flex flex-col items-center justify-center text-blue-600">
@@ -267,7 +277,9 @@ const PropertyDetails = () => {
                   <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">
                     Monthly Rent
                   </p>
-                  <p className="text-3xl font-black text-blue-600">৳ 35,000</p>
+                  <p className="text-3xl font-black text-blue-600">
+                    ৳ {property?.monthlyRent}
+                  </p>
                 </div>
                 <span className="bg-emerald-500 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
                   ✓ Available
@@ -287,63 +299,184 @@ const PropertyDetails = () => {
                   <MessageSquare className="w-5 h-5 group-hover:scale-110 transition" />{" "}
                   Contact Owner
                 </button>
-                {/* <button className="w-full border-2 border-blue-600 text-blue-600 py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-blue-50 transition">
-                  <Calendar className="w-5 h-5" /> Schedule Visit
-                </button> */}
               </div>
 
               <div className="mt-6 pt-6 border-t border-gray-100 space-y-4">
-                <div className="flex items-center gap-3 text-sm text-gray-600 cursor-pointer hover:text-blue-600">
+                <a
+                  href={`tel:${property?.user?.contactNo}`}
+                  className="flex items-center gap-3 text-sm text-gray-600 cursor-pointer hover:text-blue-600 transition-colors"
+                >
                   <div className="p-2 bg-pink-50 rounded-lg">
                     <Phone className="w-4 h-4 text-pink-500" />
                   </div>
-                  Call for inquiry
-                </div>
-                <div className="flex items-center gap-3 text-sm text-gray-600 cursor-pointer hover:text-blue-600">
+                  {property?.user?.contactNo || "Call for inquiry"}
+                </a>
+
+                <a
+                  href={`mailto:${property?.user?.email}?subject=Inquiry: ${property?.title || "Property"}`}
+                  className="flex items-center gap-3 text-sm text-gray-600 cursor-pointer hover:text-blue-600 transition-colors"
+                >
                   <div className="p-2 bg-purple-50 rounded-lg">
                     <Mail className="w-4 h-4 text-purple-500" />
                   </div>
-                  Get details via email
-                </div>
+                  {property?.user?.email || "Get details via email"}
+                </a>
               </div>
             </div>
-
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-              <h3 className="font-bold mb-4">Property Manager</h3>
+              <h3 className="font-bold mb-4 text-slate-800">
+                Property Manager
+              </h3>
               <div className="flex items-center gap-4 mb-4">
                 <img
-                  src="/api/placeholder/100/100"
+                  src={
+                    property?.user?.profileImage || "/api/placeholder/100/100"
+                  }
                   alt="Manager"
                   className="w-16 h-16 rounded-full object-cover ring-4 ring-blue-50"
                 />
                 <div>
-                  <p className="font-bold text-slate-800">Rahim Khan</p>
-                  <p className="text-xs text-gray-500">
-                    Senior Property Manager
+                  <p className="font-bold text-slate-800">
+                    {property?.user?.fullName}
                   </p>
+                  <p className="text-xs text-gray-500">Property Manager</p>
                   <div className="flex items-center gap-2 mt-1">
                     <span className="text-yellow-500 flex items-center text-xs font-bold">
-                      <Star className="w-3 h-3 fill-current mr-1" /> 4.9
+                      <Star className="w-3 h-3 fill-current mr-1" />{" "}
+                      {property?.user?.rating || "4.9"}
                     </span>
                     <span className="text-gray-300 text-xs">•</span>
-                    <span className="text-gray-500 text-xs">45 properties</span>
+                    <span className="text-gray-500 text-xs">
+                      {property?.user?.totalProperties || "45"} properties
+                    </span>
                   </div>
                 </div>
               </div>
-              <div className="bg-blue-50 p-4 rounded-xl flex items-center gap-4 mb-4">
-                <Zap className="text-orange-500 fill-current" />
-                <div>
-                  <p className="text-xs font-bold text-blue-900">
-                    Typical Response Time
-                  </p>
-                  <p className="text-xs text-blue-600">2 hours</p>
+
+              <div className="border-t border-gray-50 pt-4 mt-2">
+                <h3 className="font-bold text-xs mb-3 text-slate-400 uppercase tracking-wider">
+                  Rate Manager
+                </h3>
+                <div className="flex items-center gap-2">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      type="button"
+                      onClick={() => handleRatingSubmit(star)}
+                      onMouseEnter={() => setHover(star)}
+                      onMouseLeave={() => setHover(0)}
+                      className="transition-transform active:scale-90"
+                    >
+                      <Star
+                        className={`w-5 h-5 ${star <= (hover || rating) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`}
+                      />
+                    </button>
+                  ))}
+                  <span className="ml-2 text-sm font-bold text-slate-600">
+                    {rating > 0 ? `${rating}/5` : "0/5"}
+                  </span>
                 </div>
               </div>
-              <button className="w-full border border-blue-200 text-blue-600 py-3 rounded-xl text-sm font-bold hover:bg-blue-50 transition">
+
+              <button
+                onClick={() => setIsProfileModalOpen(true)}
+                className="w-full mt-6 border border-blue-200 text-blue-600 py-3 rounded-xl text-sm font-bold hover:bg-blue-50 transition"
+              >
                 View Full Profile
               </button>
             </div>
 
+            {isProfileModalOpen && (
+              <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+                <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+                  <div className="relative h-32 bg-[#0f172a]">
+                    <button
+                      onClick={() => setIsProfileModalOpen(false)}
+                      className="absolute right-4 top-4 p-2 bg-white/20 hover:bg-white/40 rounded-full text-white transition"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  <div className="px-6 pb-8">
+                    <div className="relative -mt-12 mb-4">
+                      <img
+                        src={
+                          property?.user?.profileImage ||
+                          "/api/placeholder/100/100"
+                        }
+                        className="w-24 h-24 rounded-2xl object-cover border-4 border-white shadow-lg"
+                        alt="Profile"
+                      />
+                    </div>
+
+                    <div className="space-y-4">
+                      <div>
+                        <h2 className="text-2xl font-black text-slate-800">
+                          {property?.user?.fullName}
+                        </h2>
+                        <p className="text-blue-600 font-bold text-sm">
+                          Property Manager
+                        </p>
+                      </div>
+
+                      <div className="grid grid-cols-1 gap-4 py-4 border-y border-slate-100">
+                        {/* <div className="text-center">
+                          <p className="text-xs text-slate-400 uppercase font-bold">
+                            Experience
+                          </p>
+                          <p className="text-lg font-black text-slate-700">
+                            5+ Years
+                          </p>
+                        </div> */}
+                        <div className=" border-l border-slate-100">
+                          <p className="text-xs text-slate-400 uppercase font-bold">
+                            Response
+                          </p>
+                          <p className="text-lg font-black text-slate-700">
+                            2 Hours
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-3 text-slate-600">
+                          <div className="p-2 bg-slate-50 rounded-lg">
+                            <Phone className="w-4 h-4" />
+                          </div>
+                          <span className="text-sm font-medium">
+                            {property?.user?.contactNo || "+880 1XXX-XXXXXX"}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-3 text-slate-600">
+                          <div className="p-2 bg-slate-50 rounded-lg">
+                            <Mail className="w-4 h-4" />
+                          </div>
+                          <span className="text-sm font-medium">
+                            {property?.user?.email}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-3 text-slate-600">
+                          <div className="p-2 bg-slate-50 rounded-lg">
+                            <MapPin className="w-4 h-4" />
+                          </div>
+                          <span className="text-sm font-medium">
+                            Dhaka, Bangladesh
+                          </span>
+                        </div>
+                      </div>
+
+                      <button
+                        onClick={() => setIsProfileModalOpen(false)}
+                        className="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold mt-4 hover:bg-slate-800 transition"
+                      >
+                        Close Profile
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
             <div className="bg-blue-50 p-6 rounded-2xl border-l-4 border-blue-500">
               <div className="flex items-center gap-2 mb-4">
                 <ShieldCheckIcon className="w-5 h-5 text-blue-600" />

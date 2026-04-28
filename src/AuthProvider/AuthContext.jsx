@@ -15,6 +15,8 @@ const AuthContext = ({ children }) => {
     }
   }, [token]);
 
+  console.log(user)
+
 
   const authInfo = {
     setToken,

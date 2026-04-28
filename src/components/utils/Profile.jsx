@@ -31,7 +31,7 @@ const Profile = () => {
   const onSubmit = (data) => console.log(data);
 
   return (
-    <div className="flex flex-col lg:flex-row gap-8 ">
+    <div className="flex flex-col lg:flex-row gap-8 min-h-screen">
       <div className="w-full lg:w-1/3 xl:w-1/4">
         <div className="  rounded-[2.5rem] shadow-sm border border-gray-100 p-8 flex flex-col items-center">
           <div className="relative mb-6">

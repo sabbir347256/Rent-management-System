@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import {
   FaBars,
   FaBuilding,
@@ -6,23 +6,34 @@ import {
   FaHome,
   FaInfoCircle,
   FaTimes,
-  FaUserShield,
+  FaUserCircle,
 } from "react-icons/fa";
 import { NavLink } from "react-router";
 import { AuthProvider } from "../../../AuthProvider/CreateContext";
-import { LogIn, ShieldCheck, User } from "lucide-react";
+import { LogIn, ShieldCheck, User, LogOut } from "lucide-react";
 
 const Navbar = () => {
-  const { user, role } = useContext(AuthProvider);
+  const { user, role, logOut } = useContext(AuthProvider);
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
     };
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
   const navItems = [
@@ -34,8 +45,8 @@ const Navbar = () => {
       icon: <FaChartLine />,
     },
     { name: "About", path: "/about", icon: <FaInfoCircle /> },
-    // { name: "Manager", path: "/manager-login", icon: <FaUserShield /> },
   ];
+
   return (
     <nav
       className={`fixed w-full z-50 transition-all duration-300 ${
@@ -44,14 +55,16 @@ const Navbar = () => {
           : "bg-[#0f172a] py-4"
       }`}
     >
-      <div className="container px-6">
+      <div className="container px-6 mx-auto">
         <div className="flex justify-between items-center">
           <div className="flex items-center space-x-2">
             <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-blue-200 shadow">
               <span className="text-white font-bold text-xl">R</span>
             </div>
             <span
-              className={`text-2xl font-extrabold tracking-tight ${scrolled ? "text-gray-800" : "text-blue-700"}`}
+              className={`text-2xl font-extrabold tracking-tight ${
+                scrolled ? "text-white" : "text-blue-700"
+              }`}
             >
               Rent<span className="text-blue-500">Ease</span>
             </span>
@@ -66,7 +79,7 @@ const Navbar = () => {
                   `px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 flex items-center space-x-2
                   ${
                     isActive
-                      ? "bg-blue-600 text-white shadow shadow-blue-200"
+                      ? "bg-white text-blue-600 shadow shadow-blue-200"
                       : "text-white hover:bg-blue-50 hover:text-blue-600"
                   }`
                 }
@@ -96,6 +109,42 @@ const Navbar = () => {
                     </button>
                   </NavLink>
                 )}
+
+                {role === "USER" && (
+                  <div className="relative" ref={dropdownRef}>
+                    <button
+                      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                      className="flex items-center gap-2 px-4 py-2 bg-white text-blue-600 font-bold rounded-full shadow-md hover:bg-blue-50 transition-all duration-300 border border-blue-100"
+                    >
+                      <FaUserCircle className="w-6 h-6" />
+                      <span>Profile</span>
+                    </button>
+
+                    {isDropdownOpen && (
+                      <div className="absolute right-0 mt-3 w-48 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-50 animate-in fade-in zoom-in duration-200">
+                        <NavLink
+                          to="/my-profile"
+                          onClick={() => setIsDropdownOpen(false)}
+                          className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                        >
+                          <User className="w-4 h-4" />
+                          My Profile
+                        </NavLink>
+                        <hr className="border-gray-50 mx-2" />
+                        <button
+                          onClick={() => {
+                            logOut();
+                            setIsDropdownOpen(false);
+                          }}
+                          className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                        >
+                          <LogOut className="w-4 h-4" />
+                          Logout
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
               </>
             ) : (
               <NavLink to="/login">
@@ -105,15 +154,14 @@ const Navbar = () => {
                 </button>
               </NavLink>
             )}
-            {/* <button className="bg-gray-900 text-white px-6 py-2 rounded-full hover:bg-blue-600 shadow-lg hover:shadow-blue-200 transition-all active:scale-95">
-              Get Started
-            </button> */}
           </div>
 
           <div className="md:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className={`p-2 rounded-lg transition-colors ${isOpen ? "bg-blue-100 text-blue-600" : "text-gray-600"}`}
+              className={`p-2 rounded-lg transition-colors ${
+                isOpen ? "bg-blue-100 text-blue-600" : "text-white"
+              }`}
             >
               {isOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
             </button>
@@ -147,14 +195,39 @@ const Navbar = () => {
             </NavLink>
           ))}
           <hr className="border-gray-100" />
-          <div className="grid grid-cols-2 gap-4 pt-2">
-            <button className="py-3 text-center font-bold text-gray-700 border border-gray-200 rounded-xl">
-              Login
-            </button>
-            <button className="py-3 text-center font-bold bg-blue-600 text-white rounded-xl shadow-lg shadow-blue-100">
-              Sign Up
-            </button>
-          </div>
+          {user ? (
+            <div className="space-y-3">
+              <NavLink
+                to="/my-profile"
+                onClick={() => setIsOpen(false)}
+                className="block py-3 text-center font-bold text-blue-600 border border-blue-100 rounded-xl"
+              >
+                My Profile
+              </NavLink>
+              <button
+                onClick={() => {
+                  logOut();
+                  setIsOpen(false);
+                }}
+                className="w-full py-3 text-center font-bold bg-red-600 text-white rounded-xl shadow-lg"
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-4 pt-2">
+              <NavLink to="/login" onClick={() => setIsOpen(false)}>
+                <button className="w-full py-3 text-center font-bold text-gray-700 border border-gray-200 rounded-xl">
+                  Login
+                </button>
+              </NavLink>
+              <NavLink to="/signup" onClick={() => setIsOpen(false)}>
+                <button className="w-full py-3 text-center font-bold bg-blue-600 text-white rounded-xl">
+                  Sign Up
+                </button>
+              </NavLink>
+            </div>
+          )}
         </div>
       </div>
     </nav>

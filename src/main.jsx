@@ -28,6 +28,7 @@ import Dashboard from "./components/pages/ManagerAndAdmin/Admin/Dashboard/Dashbo
 import Allbooking from "./components/pages/ManagerAndAdmin/Admin/Allbookign/Allbooking.jsx";
 import ManagerLayout from "./components/pages/ManagerAndAdmin/Manager/ManagerLayout/ManagerLayout.jsx";
 import Profile from "./components/utils/Profile.jsx";
+import UserProfile from "./components/utils/UserProfile.jsx";
 
 const queryClient = new QueryClient();
 
@@ -64,6 +65,10 @@ const router = createBrowserRouter([
       {
         path: "/dashboard",
         element: <AdminDashboard></AdminDashboard>,
+      },
+      {
+        path: "/my-profile",
+        element: <UserProfile></UserProfile>
       },
       
     ],
