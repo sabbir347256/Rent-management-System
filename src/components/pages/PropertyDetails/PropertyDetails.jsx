@@ -23,6 +23,26 @@ import { Controller, useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
 import { AuthProvider } from "../../../AuthProvider/CreateContext";
 import DatePicker from "react-datepicker";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+import markerIcon from "leaflet/dist/images/marker-icon.png";
+import markerShadow from "leaflet/dist/images/marker-shadow.png";
+import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
+
+let DefaultIcon = L.icon({
+  iconUrl: markerIcon,
+  shadowUrl: markerShadow,
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+});
+L.Marker.prototype.options.icon = DefaultIcon;
+function RecenterAutomatically({ lat, lng }) {
+  const map = useMap();
+  useEffect(() => {
+    map.setView([lat, lng]);
+  }, [lat, lng, map]);
+  return null;
+}
 
 const PropertyDetails = () => {
   const { user } = useContext(AuthProvider);
@@ -112,12 +132,16 @@ const PropertyDetails = () => {
   };
 
   const handleRatingSubmit = async (value) => {
+    if (!user?.userId || !property?.user?._id) {
+      return toast.error("User information is missing");
+    }
+
     const token = localStorage.getItem("accessToken");
     const loadingToast = toast.loading("Submitting rating...");
 
     try {
       const response = await fetch(
-        "http://localhost:5000/api/v1/manager/rate",
+        "http://localhost:5000/api/v1/review/rating",
         {
           method: "PATCH",
           headers: {
@@ -125,7 +149,8 @@ const PropertyDetails = () => {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
-            managerId: property?.managerId || "65f123456789",
+            managerId: property.user._id,
+            userId: user.userId,
             rating: value,
           }),
         },
@@ -137,15 +162,45 @@ const PropertyDetails = () => {
         toast.success("Rating updated!", { id: loadingToast });
         setRating(value);
       } else {
-        toast.error(result.message, { id: loadingToast });
+        toast.error(result.message || "Failed to submit rating", {
+          id: loadingToast,
+        });
       }
     } catch (error) {
-      toast.error("Failed to submit rating", { id: loadingToast }, error);
+      toast.error("Something went wrong", { id: loadingToast }, error);
     }
   };
 
+  const [coords, setCoords] = useState({ lat: 23.7661, lng: 90.4304 });
+
+  useEffect(() => {
+    const geocodeAddress = async () => {
+      const fullAddress =
+        property && `${property.address}, ${property.area}, ${property.city}`;
+
+      try {
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(fullAddress)}`,
+        );
+        const data = await response.json();
+        if (data.length > 0) {
+          setCoords({
+            lat: parseFloat(data[0].lat),
+            lng: parseFloat(data[0].lon),
+          });
+        }
+      } catch (error) {
+        console.error("Geocoding failed", error);
+      }
+    };
+
+    if (property) {
+      geocodeAddress();
+    }
+  }, [property]);
+
   if (loading) return <p className="text-center p-10">Loading...</p>;
- 
+
   return (
     <div className="  min-h-screen container pt-4">
       <Toaster />
@@ -254,15 +309,33 @@ const PropertyDetails = () => {
                 ))}
               </div>
             </div>
-            <div className="pt-4">
-              <h3 className="font-bold text-lg mb-4">Location</h3>
-              <div className="w-full h-64 bg-blue-50 rounded-2xl border-2 border-dashed border-blue-200 flex flex-col items-center justify-center text-blue-600">
-                <MapPin className="w-8 h-8 mb-2" />
-                <p className="font-medium text-sm">
-                  Interactive map will be displayed here
+            <div className="relative h-80 w-full rounded-[2.5rem] overflow-hidden border-4 border-white shadow-2xl shadow-slate-200">
+              {coords && (
+                <MapContainer
+                  center={[coords.lat, coords.lng]}
+                  zoom={15}
+                  scrollWheelZoom={false}
+                  style={{ height: "100%", width: "100%", zIndex: 0 }}
+                >
+                  <TileLayer
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  />
+                  <Marker position={[coords.lat, coords.lng]}>
+                    <Popup className="font-bold">
+                      {property?.propertyTitle || "Property Location"}
+                    </Popup>
+                  </Marker>
+                  <RecenterAutomatically lat={coords.lat} lng={coords.lng} />
+                </MapContainer>
+              )}
+
+              <div className="absolute bottom-6 left-6 right-6 z-[1000] bg-white/90 backdrop-blur-md p-4 rounded-3xl border border-white shadow-xl">
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">
+                  Location
                 </p>
-                <p className="text-xs text-blue-400">
-                  House 45, Road 12, Banani, Dhaka 1213
+                <p className="text-sm font-bold text-slate-700">
+                  {property && `${property.address}, ${property.area}`}
                 </p>
               </div>
             </div>

@@ -29,6 +29,7 @@ const AddProperty = () => {
   };
 
   const onSubmit = async (data) => {
+    console.log(data);
     setIsLoading(true);
     const formData = new FormData();
 
@@ -140,7 +141,9 @@ const AddProperty = () => {
                 </label>
                 <input
                   type="date"
-                  {...register("availableDate", { required: "Date is required" })}
+                  {...register("availableDate", {
+                    required: "Date is required",
+                  })}
                   className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all font-medium"
                 />
                 {errors.date && (
@@ -159,16 +162,16 @@ const AddProperty = () => {
           </h2>
           <div className="grid grid-cols-3 gap-4">
             <div>
-              <label className={labelClass}>Address</label>
-              <input {...register("address")} className={inputClass} />
+              <label className={labelClass}>Area</label>
+              <input {...register("area")} placeholder="Block-D,5 no road"  className={inputClass} />
             </div>
             <div>
               <label className={labelClass}>City</label>
-              <input {...register("city")} className={inputClass} />
+              <input {...register("city")} placeholder="Banasree" className={inputClass} />
             </div>
             <div>
-              <label className={labelClass}>Area</label>
-              <input {...register("area")} className={inputClass} />
+              <label className={labelClass}>Address</label>
+              <input {...register("address")} defaultValue={'Bangladesh'} placeholder="Bangladesh" className={inputClass} />
             </div>
             <div>
               <label className={labelClass}>Bedrooms</label>

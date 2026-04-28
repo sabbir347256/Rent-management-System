@@ -1,12 +1,19 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { User, Mail, Lock, ArrowRight, Phone, CreditCard, Shield, Camera } from "lucide-react";
+import {
+  User,
+  Mail,
+  Lock,
+  ArrowRight,
+  Phone,
+  CreditCard,
+  Shield,
+  Camera,
+} from "lucide-react";
+import toast, { Toaster } from "react-hot-toast";
 const Signup = () => {
   const [loading, setLoading] = useState(false);
-  const {
-    register,
-    handleSubmit,
-  } = useForm();
+  const { register, handleSubmit } = useForm();
 
   const onSubmit = async (data) => {
     setLoading(true);
@@ -25,38 +32,51 @@ const Signup = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/v1/user/register", {
-        method: "POST",
-        body: formData, 
-      });
+      const response = await fetch(
+        "http://localhost:5000/api/v1/user/register",
+        {
+          method: "POST",
+          body: formData,
+        },
+      );
 
       const result = await response.json();
 
+      console.log(result);
+
       if (response.ok) {
-        alert("Registration Successful!");
+        toast.success("Registration Successful!");
         console.log("Success:", result);
       } else {
-        alert(result.message || "Registration failed");
+        toast.error(result.errors[0].message || "Registration failed");
       }
     } catch (error) {
       console.error("Error:", error);
-      alert("Something went wrong!");
+      toast.error("Something went wrong!");
     } finally {
       setLoading(false);
     }
   };
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6 py-12">
+      <Toaster position="top-center" reverseOrder={false} />
       <div className="max-w-2xl w-full bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden">
         <div className="p-8 md:p-12">
           <div className="text-center mb-10">
-            <h1 className="text-3xl font-black text-slate-800 mb-2">Join Our Platform</h1>
+            <h1 className="text-3xl font-black text-slate-800 mb-2">
+              Join Our Platform
+            </h1>
             <p className="text-slate-500">Create your account to get started</p>
           </div>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="grid grid-cols-1 md:grid-cols-2 gap-6"
+          >
             <div className="space-y-1">
-              <label className="text-sm font-bold text-slate-700 ml-1">Full Name</label>
+              <label className="text-sm font-bold text-slate-700 ml-1">
+                Full Name
+              </label>
               <div className="relative">
                 <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                 <input
@@ -68,7 +88,9 @@ const Signup = () => {
             </div>
 
             <div className="space-y-1">
-              <label className="text-sm font-bold text-slate-700 ml-1">Email Address</label>
+              <label className="text-sm font-bold text-slate-700 ml-1">
+                Email Address
+              </label>
               <div className="relative">
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                 <input
@@ -81,7 +103,9 @@ const Signup = () => {
             </div>
 
             <div className="space-y-1">
-              <label className="text-sm font-bold text-slate-700 ml-1">Contact Number</label>
+              <label className="text-sm font-bold text-slate-700 ml-1">
+                Contact Number
+              </label>
               <div className="relative">
                 <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                 <input
@@ -93,7 +117,9 @@ const Signup = () => {
             </div>
 
             <div className="space-y-1">
-              <label className="text-sm font-bold text-slate-700 ml-1">NID Number</label>
+              <label className="text-sm font-bold text-slate-700 ml-1">
+                NID Number
+              </label>
               <div className="relative">
                 <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                 <input
@@ -105,11 +131,16 @@ const Signup = () => {
             </div>
 
             <div className="space-y-1">
-              <label className="text-sm font-bold text-slate-700 ml-1">Password</label>
+              <label className="text-sm font-bold text-slate-700 ml-1">
+                Password
+              </label>
               <div className="relative">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                 <input
-                  {...register("password", { required: "Min 6 chars", minLength: 6 })}
+                  {...register("password", {
+                    required: "Min 6 chars",
+                    minLength: 6,
+                  })}
                   type="password"
                   className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 outline-none"
                   placeholder="••••••"
@@ -118,7 +149,9 @@ const Signup = () => {
             </div>
 
             <div className="space-y-1">
-              <label className="text-sm font-bold text-slate-700 ml-1">Confirm Password</label>
+              <label className="text-sm font-bold text-slate-700 ml-1">
+                Confirm Password
+              </label>
               <div className="relative">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                 <input
@@ -131,7 +164,9 @@ const Signup = () => {
             </div>
 
             <div className="space-y-1">
-              <label className="text-sm font-bold text-slate-700 ml-1">User Role</label>
+              <label className="text-sm font-bold text-slate-700 ml-1">
+                User Role
+              </label>
               <div className="relative">
                 <Shield className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                 <select
@@ -145,7 +180,9 @@ const Signup = () => {
             </div>
 
             <div className="space-y-1">
-              <label className="text-sm font-bold text-slate-700 ml-1">Profile Image</label>
+              <label className="text-sm font-bold text-slate-700 ml-1">
+                Profile Image
+              </label>
               <div className="relative">
                 <Camera className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                 <input
