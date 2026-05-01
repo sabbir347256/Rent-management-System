@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   FaBath,
   FaBed,
@@ -8,9 +8,67 @@ import {
   FaStar,
 } from "react-icons/fa";
 import { NavLink } from "react-router";
+import { AuthProvider } from "../../../../AuthProvider/CreateContext";
 
 const SingleCard = ({ data }) => {
-  console.log(data);
+  const { user } = useContext(AuthProvider);
+  const [isFavorited, setIsFavorited] = useState(false);
+
+  console.log(user)
+
+  useEffect(() => {
+    const checkFavoriteStatus = async () => {
+      if (!user) return;
+
+      const token = localStorage.getItem("accessToken");
+      try {
+        const response = await fetch(`http://localhost:5000/api/v1/favourite/check?userId=${user.userId}&propertyId=${data._id}`, {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        const result = await response.json();
+        if (result.exists) {
+          setIsFavorited(true);
+        }
+      } catch (error) {
+        console.error("Status check failed", error);
+      }
+    };
+
+    checkFavoriteStatus();
+  }, [user, data._id]);
+
+  const handleFavoriteToggle = async () => {
+    if (!user) {
+      alert("Please login first");
+      return;
+    }
+
+    const token = localStorage.getItem("accessToken");
+    const favoriteData = {
+      propertyId: data._id,
+      userId: user.userId,
+      ownerId: data.user._id,
+    };
+
+    try {
+      const response = await fetch("http://localhost:5000/api/v1/favourite/toggle", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(favoriteData),
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        setIsFavorited(result.isFavorited);
+      }
+    } catch (error) {
+      console.error("Error toggling favorite:", error);
+    }
+  };
+
   return (
     <div>
       <div className="bg-white rounded-[2rem] overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl transition-all duration-300 group">
@@ -23,7 +81,11 @@ const SingleCard = ({ data }) => {
           <div className="absolute top-4 left-4 bg-yellow-400 text-white px-4 py-1.5 rounded-full text-xs font-bold flex items-center gap-1 shadow-md">
             <FaStar size={10} /> Featured
           </div>
-          <button className="absolute top-4 right-4 bg-white/80 backdrop-blur-sm p-2 rounded-full text-gray-400 hover:text-red-500 transition-colors">
+          <button
+            onClick={handleFavoriteToggle}
+            className={`absolute top-4 right-4 p-2 rounded-full transition-all ${isFavorited ? "bg-red-500 text-white" : "bg-white/80 text-gray-400"
+              }`}
+          >
             <FaHeart size={18} />
           </button>
           <div className="absolute bottom-4 right-4 bg-blue-600 text-white px-5 py-1.5 rounded-lg text-sm font-semibold">

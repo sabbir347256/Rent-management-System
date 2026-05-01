@@ -14,9 +14,9 @@ const About = () => {
         { name: "Leena Roy", role: "Marketing Manager", image: image4},
     ];
     return (
-        <div className="min-h-screen bg-white text-gray-700 mobileResponsiveDynamicPM">
-            <div className='mt-14'>
-                <header className="bg-gray-50 py-16 px-4 text-center border-b border-gray-100">
+        <div className="min-h-screen bg-white text-gray-700 ">
+            <div className=''>
+                <header className="pb-16 px-4 text-center border-b border-gray-100">
                     <h1 className="text-4xl font-extrabold text-gray-900 mb-2">About RentEase</h1>
                     <p className="text-lg text-gray-600">Your trusted platform to find rental properties across Dhaka</p>
                 </header>

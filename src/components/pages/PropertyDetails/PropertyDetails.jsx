@@ -202,9 +202,9 @@ const PropertyDetails = () => {
   if (loading) return <p className="text-center p-10">Loading...</p>;
 
   return (
-    <div className="  min-h-screen container pt-4">
+    <div className="  min-h-screen container">
       <Toaster />
-      <div className="flex flex-col lg:flex-row gap-8 mt-20 pb-20">
+      <div className="flex flex-col lg:flex-row gap-8 pb-20">
         <div className="w-full lg:w-2/3 space-y-6">
           <div className="relative h-[400px]">
             <img

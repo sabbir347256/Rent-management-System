@@ -29,6 +29,7 @@ import Allbooking from "./components/pages/ManagerAndAdmin/Admin/Allbookign/Allb
 import ManagerLayout from "./components/pages/ManagerAndAdmin/Manager/ManagerLayout/ManagerLayout.jsx";
 import Profile from "./components/utils/Profile.jsx";
 import UserProfile from "./components/utils/UserProfile.jsx";
+import FavouriteRent from "./components/pages/userProfile/Favourite/FavouriteRent.jsx";
 
 const queryClient = new QueryClient();
 
@@ -69,6 +70,10 @@ const router = createBrowserRouter([
       {
         path: "/my-profile",
         element: <UserProfile></UserProfile>
+      },
+      {
+        path: "/my-favourites",
+        element: <FavouriteRent></FavouriteRent>
       },
       
     ],

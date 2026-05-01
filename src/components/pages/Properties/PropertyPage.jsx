@@ -58,8 +58,8 @@ const PropertyPage = () => {
     },
   ];
   return (
-    <div className="bg-[#F8FAFC] min-h-screen pt-28 pb-20 px-6">
-      <div className="container dynamic-Padding">
+    <div className=" min-h-screen">
+      <div className="container">
         <div className="flex flex-col lg:flex-row gap-8">
           <aside className="w-full lg:w-80">
             <FilterSlideBar />

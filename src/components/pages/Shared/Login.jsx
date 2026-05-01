@@ -35,7 +35,8 @@ const Login = () => {
         localStorage.setItem("accessToken", result.data.accessToken);
         toast.success(`${result.message}`, { id: loadingToast });
         setTimeout(() => {
-          navigate("/");
+          navigate('/', { replace: true });
+          window.location.reload();
         }, 1000);
       } else {
         toast.error(result.message || "Invalid credentials", {
@@ -43,7 +44,7 @@ const Login = () => {
         });
       }
     } catch (error) {
-      toast.error("Something went wrong",error, { id: loadingToast });
+      toast.error("Something went wrong", error, { id: loadingToast });
     }
   };
   return (
@@ -71,9 +72,8 @@ const Login = () => {
                   {...register("email", { required: "Email is required" })}
                   type="email"
                   placeholder="name@example.com"
-                  className={`w-full pl-12 pr-4 py-3.5 bg-slate-50 border ${
-                    errors.email ? "border-red-500" : "border-slate-200"
-                  } rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all`}
+                  className={`w-full pl-12 pr-4 py-3.5 bg-slate-50 border ${errors.email ? "border-red-500" : "border-slate-200"
+                    } rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all`}
                 />
               </div>
               {errors.email && (
@@ -103,9 +103,8 @@ const Login = () => {
                   })}
                   type="password"
                   placeholder="••••••••"
-                  className={`w-full pl-12 pr-4 py-3.5 bg-slate-50 border ${
-                    errors.password ? "border-red-500" : "border-slate-200"
-                  } rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all`}
+                  className={`w-full pl-12 pr-4 py-3.5 bg-slate-50 border ${errors.password ? "border-red-500" : "border-slate-200"
+                    } rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all`}
                 />
               </div>
               {errors.password && (

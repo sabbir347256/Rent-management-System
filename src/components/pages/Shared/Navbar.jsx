@@ -11,6 +11,7 @@ import {
 import { NavLink } from "react-router";
 import { AuthProvider } from "../../../AuthProvider/CreateContext";
 import { LogIn, ShieldCheck, User, LogOut } from "lucide-react";
+import { MdFavorite } from "react-icons/md";
 
 const Navbar = () => {
   const { user, role, logOut } = useContext(AuthProvider);
@@ -49,11 +50,10 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`fixed w-full z-50 transition-all duration-300 ${
-        scrolled
+      className={`fixed w-full z-50 transition-all duration-300 ${scrolled
           ? "bg-blue-600 backdrop-blur-md shadow-lg py-2"
           : "bg-[#0f172a] py-4"
-      }`}
+        }`}
     >
       <div className="container px-6 mx-auto">
         <div className="flex justify-between items-center">
@@ -62,9 +62,8 @@ const Navbar = () => {
               <span className="text-white font-bold text-xl">R</span>
             </div>
             <span
-              className={`text-2xl font-extrabold tracking-tight ${
-                scrolled ? "text-white" : "text-blue-700"
-              }`}
+              className={`text-2xl font-extrabold tracking-tight ${scrolled ? "text-white" : "text-blue-700"
+                }`}
             >
               Rent<span className="text-blue-500">Ease</span>
             </span>
@@ -77,10 +76,9 @@ const Navbar = () => {
                 to={item.path}
                 className={({ isActive }) =>
                   `px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 flex items-center space-x-2
-                  ${
-                    isActive
-                      ? "bg-white text-blue-600 shadow shadow-blue-200"
-                      : "text-white hover:bg-blue-50 hover:text-blue-600"
+                  ${isActive
+                    ? "bg-white text-blue-600 shadow shadow-blue-200"
+                    : "text-white hover:bg-blue-50 hover:text-blue-600"
                   }`
                 }
               >
@@ -130,6 +128,14 @@ const Navbar = () => {
                           <User className="w-4 h-4" />
                           My Profile
                         </NavLink>
+                        <NavLink
+                          to="/my-favourites"
+                          onClick={() => setIsDropdownOpen(false)}
+                          className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                        >
+                          <MdFavorite className="w-4 h-4" />
+                          Favourites
+                        </NavLink>
                         <hr className="border-gray-50 mx-2" />
                         <button
                           onClick={() => {
@@ -159,9 +165,8 @@ const Navbar = () => {
           <div className="md:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className={`p-2 rounded-lg transition-colors ${
-                isOpen ? "bg-blue-100 text-blue-600" : "text-white"
-              }`}
+              className={`p-2 rounded-lg transition-colors ${isOpen ? "bg-blue-100 text-blue-600" : "text-white"
+                }`}
             >
               {isOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
             </button>
@@ -170,11 +175,10 @@ const Navbar = () => {
       </div>
 
       <div
-        className={`md:hidden absolute top-full left-0 w-full bg-white shadow-2xl transition-all duration-300 ease-in-out ${
-          isOpen
+        className={`md:hidden absolute top-full left-0 w-full bg-white shadow-2xl transition-all duration-300 ease-in-out ${isOpen
             ? "opacity-100 translate-y-0"
             : "opacity-0 -translate-y-10 pointer-events-none"
-        }`}
+          }`}
       >
         <div className="px-6 py-8 space-y-4">
           {navItems.map((item) => (
@@ -183,10 +187,9 @@ const Navbar = () => {
               to={item.path}
               onClick={() => setIsOpen(false)}
               className={({ isActive }) =>
-                `flex items-center space-x-4 p-3 rounded-xl transition-all ${
-                  isActive
-                    ? "bg-blue-50 text-blue-600"
-                    : "text-gray-600 hover:bg-gray-50"
+                `flex items-center space-x-4 p-3 rounded-xl transition-all ${isActive
+                  ? "bg-blue-50 text-blue-600"
+                  : "text-gray-600 hover:bg-gray-50"
                 }`
               }
             >
@@ -197,6 +200,13 @@ const Navbar = () => {
           <hr className="border-gray-100" />
           {user ? (
             <div className="space-y-3">
+              <NavLink
+                to="/my-profile"
+                onClick={() => setIsOpen(false)}
+                className="block py-3 text-center font-bold text-blue-600 border border-blue-100 rounded-xl"
+              >
+                My Profile
+              </NavLink>
               <NavLink
                 to="/my-profile"
                 onClick={() => setIsOpen(false)}
