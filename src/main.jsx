@@ -30,6 +30,7 @@ import ManagerLayout from "./components/pages/ManagerAndAdmin/Manager/ManagerLay
 import Profile from "./components/utils/Profile.jsx";
 import UserProfile from "./components/utils/UserProfile.jsx";
 import FavouriteRent from "./components/pages/userProfile/Favourite/FavouriteRent.jsx";
+import ManagerDashbaord from "./components/pages/ManagerAndAdmin/Manager/ManagerDashboard/ManagerDashbaord.jsx";
 
 const queryClient = new QueryClient();
 
@@ -119,7 +120,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Dashboard></Dashboard>,
+        element: <ManagerDashbaord></ManagerDashbaord>,
       },
       {
         path: "my-property",

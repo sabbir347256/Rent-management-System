@@ -14,27 +14,6 @@ import {
 import { BarChart, Bar, ResponsiveContainer, XAxis, Cell } from "recharts";
 
 const Dashboard = () => {
-//   const bookingData = [
-//     { month: "J", value: 40 },
-//     { month: "F", value: 45 },
-//     { month: "M", value: 38 },
-//     { month: "A", value: 55 },
-//     { month: "M", value: 52, highlight: true },
-//     { month: "J", value: 65 },
-//     { month: "J", value: 58 },
-//     { month: "A", value: 75 },
-//     { month: "S", value: 70 },
-//     { month: "O", value: 85 },
-//     { month: "N", value: 80 },
-//     { month: "D", value: 95 },
-//   ];
-
-//   const countries = [
-//     { name: "Hotels $ Lodges", percentage: 48, color: "bg-blue-600" },
-//     { name: "Flight", percentage: 18, color: "bg-emerald-800" },
-//     { name: "Experiences", percentage: 12, color: "bg-yellow-600" },
-//     { name: "Car Rental", percentage: 8, color: "bg-orange-600" },
-//   ];
   return (
     <div className="">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">

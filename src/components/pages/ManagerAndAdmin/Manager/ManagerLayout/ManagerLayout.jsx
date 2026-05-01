@@ -46,7 +46,7 @@ const ManagerLayout = () => {
   const menuItems = [
     {
       items: [
-        { path: "/admin-dashboard", label: "Dashboard", icon: LayoutDashboard },
+        { path: "/manager-dashboard", label: "Dashboard", icon: LayoutDashboard },
       ],
     },
     {
@@ -126,7 +126,7 @@ const ManagerLayout = () => {
                   <NavLink
                     key={item.label}
                     to={item.path}
-                    end={item.path === "/admin-dashboard"}
+                    end={item.path === "/manager-dashboard"}
                     onClick={() => setIsOpen(false)}
                   >
                     {({ isActive }) => (
