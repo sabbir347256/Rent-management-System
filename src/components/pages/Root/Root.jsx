@@ -7,7 +7,7 @@ const Root = () => {
   return (
     <div className="interFont">
       <Navbar></Navbar>
-      <div className="pt-32">
+      <div className="">
         <Outlet></Outlet>
       </div>
       <Footer></Footer>

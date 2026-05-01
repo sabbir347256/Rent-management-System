@@ -202,7 +202,7 @@ const PropertyDetails = () => {
   if (loading) return <p className="text-center p-10">Loading...</p>;
 
   return (
-    <div className="  min-h-screen container">
+    <div className="  min-h-screen container py-32">
       <Toaster />
       <div className="flex flex-col lg:flex-row gap-8 pb-20">
         <div className="w-full lg:w-2/3 space-y-6">

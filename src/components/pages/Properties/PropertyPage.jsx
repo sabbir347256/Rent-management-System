@@ -1,72 +1,47 @@
-import React from "react";
+import React, { useEffect } from "react";
 import FilterSlideBar from "./FilterSlideBar";
 import PropertyListing from "./PropertyListing";
+import { useLocation, useNavigate, useSearchParams } from "react-router";
 
 const PropertyPage = () => {
-  const properties = [
-    {
-      id: 1,
-      title: "Modern 2 Bedroom Apartment",
-      location: "Banani, Dhaka",
-      price: 35000,
-      beds: 2,
-      baths: 2,
-      sqft: 1200,
-      rating: 4.8,
-      type: "Apartment",
-      image:
-        "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80",
-    },
-    {
-      id: 2,
-      title: "Cozy Family House",
-      location: "Gulshan, Dhaka",
-      price: 65000,
-      beds: 4,
-      baths: 3,
-      sqft: 2200,
-      rating: 4.9,
-      type: "House",
-      image:
-        "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
-    },
-    {
-      id: 1,
-      title: "Modern 2 Bedroom Apartment",
-      location: "Banani, Dhaka",
-      price: 35000,
-      beds: 2,
-      baths: 2,
-      sqft: 1200,
-      rating: 4.8,
-      type: "Apartment",
-      image:
-        "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80",
-    },
-    {
-      id: 2,
-      title: "Cozy Family House",
-      location: "Gulshan, Dhaka",
-      price: 65000,
-      beds: 4,
-      baths: 3,
-      sqft: 2200,
-      rating: 4.9,
-      type: "House",
-      image:
-        "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
-    },
-  ];
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    if (location.search) {
+      navigate(location.pathname, { replace: true });
+    }
+  }, []);
+
+  const handleFilter = (filterData) => {
+    const params = {};
+
+    if (filterData.search) params.searchTerm = filterData.search;
+    if (filterData.type && filterData.type !== "All Types") params.propertyType = filterData.type.toLowerCase();
+    if (filterData.bedrooms) params.bedroom = filterData.bedrooms;
+
+    if (filterData.minPrice) params.minPrice = filterData.minPrice;
+    if (filterData.maxPrice) params.maxPrice = filterData.maxPrice;
+
+    params.page = 1;
+    setSearchParams(params);
+  };
+
+  const handleReset = () => {
+    setSearchParams({});
+  };
+
   return (
-    <div className=" min-h-screen">
+    <div className=" min-h-screen py-32">
       <div className="container">
         <div className="flex flex-col lg:flex-row gap-8">
           <aside className="w-full lg:w-80">
-            <FilterSlideBar />
+            <FilterSlideBar onFilter={handleFilter} onReset={handleReset} />
           </aside>
 
           <main className="flex-1">
-            <PropertyListing properties={properties} />
+            <PropertyListing searchParams={searchParams} setSearchParams={setSearchParams} />
           </main>
         </div>
       </div>

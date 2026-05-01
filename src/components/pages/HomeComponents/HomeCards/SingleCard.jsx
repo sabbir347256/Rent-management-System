@@ -14,8 +14,6 @@ const SingleCard = ({ data }) => {
   const { user } = useContext(AuthProvider);
   const [isFavorited, setIsFavorited] = useState(false);
 
-  console.log(user)
-
   useEffect(() => {
     const checkFavoriteStatus = async () => {
       if (!user) return;
@@ -68,6 +66,9 @@ const SingleCard = ({ data }) => {
       console.error("Error toggling favorite:", error);
     }
   };
+
+
+  console.log(data)
 
   return (
     <div>

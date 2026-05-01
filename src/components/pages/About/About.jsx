@@ -14,7 +14,7 @@ const About = () => {
         { name: "Leena Roy", role: "Marketing Manager", image: image4},
     ];
     return (
-        <div className="min-h-screen bg-white text-gray-700 ">
+        <div className="min-h-screen bg-white text-gray-700 py-32">
             <div className=''>
                 <header className="pb-16 px-4 text-center border-b border-gray-100">
                     <h1 className="text-4xl font-extrabold text-gray-900 mb-2">About RentEase</h1>

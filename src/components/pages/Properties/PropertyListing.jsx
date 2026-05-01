@@ -3,53 +3,67 @@ import { FiGrid, FiList } from 'react-icons/fi';
 import SingleCard from '../HomeComponents/HomeCards/SingleCard';
 import { useQuery } from '@tanstack/react-query';
 
-const PropertyListing = ({properties}) => {
-   const { data: property = [], isLoading, refetch } = useQuery({
-    queryKey: ['GET'],
-    queryFn: () => {
-      return fetch('http://localhost:5000/api/v1/property')
-        .then(res => res.json())
-        .then(data => {
-          return data;
-        })
+const PropertyListing = ({searchParams, setSearchParams }) => {
+  const currentPage = Number(searchParams.get('page')) || 1;
+
+  const { data: propertyData, isLoading } = useQuery({
+    queryKey: ['properties', searchParams.toString()],
+    queryFn: async () => {
+      const response = await fetch(`http://localhost:5000/api/v1/property?${searchParams.toString()}`);
+      if (!response.ok) throw new Error("Network response was not ok");
+      return response.json();
     }
   });
-    
-    return (
-      <div className="flex-1">
-      <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-50 flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
-        <p className="text-gray-500 font-medium">
-          Showing <span className="text-blue-600 font-bold">{properties.length}</span> properties
-        </p>
-        
-        <div className="flex items-center gap-3">
-          <select className="p-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-semibold outline-none cursor-pointer">
-            <option>Featured First</option>
-            <option>Price: Low to High</option>
-            <option>Price: High to Low</option>
-          </select>
-          <div className="flex border border-gray-200 rounded-lg overflow-hidden">
-            <button className="p-2 bg-blue-50 text-blue-600 border-r border-gray-200"><FiGrid /></button>
-            <button className="p-2 text-gray-400 hover:bg-gray-50"><FiList /></button>
-          </div>
-        </div>
+
+  const handlePageChange = (newPage) => {
+    searchParams.set('page', newPage);
+    setSearchParams(searchParams);
+  };
+
+  if (isLoading) return <div>Loading...</div>;
+
+  const meta = propertyData?.meta;
+
+  return (
+    <div className="flex-1">
+      <div className="mb-8">
+        <p>Showing <span className="text-blue-600 font-bold">{propertyData?.data?.length || 0}</span> properties</p>
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-        {property?.data?.map((property) => (
-          <SingleCard key={property.id} data={property} />
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+        {propertyData?.data?.map((item) => (
+          <SingleCard key={item._id} data={item} />
         ))}
       </div>
 
-      <div className="mt-12 flex justify-center items-center gap-2">
-        <button className="w-10 h-10 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50">«</button>
-        <button className="w-10 h-10 rounded-lg bg-blue-600 text-white font-bold shadow-lg shadow-blue-100">1</button>
-        <button className="w-10 h-10 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50">2</button>
-        <button className="w-10 h-10 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50">3</button>
-        <button className="w-10 h-10 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50">»</button>
-      </div>
+      {meta?.totalPage > 1 && (
+        <div className="mt-12 flex justify-center items-center gap-2">
+          <button
+            disabled={currentPage === 1}
+            onClick={() => handlePageChange(currentPage - 1)}
+            className="w-10 h-10 rounded-lg border flex items-center justify-center disabled:opacity-50"
+          >«</button>
+
+          {[...Array(meta.totalPage)].map((_, i) => (
+            <button
+              key={i}
+              onClick={() => handlePageChange(i + 1)}
+              className={`w-10 h-10 rounded-lg font-bold ${currentPage === i + 1 ? "bg-blue-600 text-white" : "border"
+                }`}
+            >
+              {i + 1}
+            </button>
+          ))}
+
+          <button
+            disabled={currentPage === meta.totalPage}
+            onClick={() => handlePageChange(currentPage + 1)}
+            className="w-10 h-10 rounded-lg border flex items-center justify-center disabled:opacity-50"
+          >»</button>
+        </div>
+      )}
     </div>
-    );
+  );
 };
 
 export default PropertyListing;

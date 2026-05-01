@@ -1,16 +1,26 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 
-const FilterSlideBar = () => {
+const FilterSlideBar = ({ onFilter,onReset }) => {
   const { register, handleSubmit, reset } = useForm();
 
-  const onSubmit = (data) => console.log(data);
+
+  const handleClearAll = () => {
+    reset();
+    onReset();
+  };
+
+  const onSubmit = (data) => {
+    onFilter(data);
+  };
+
   return (
     <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 h-fit sticky top-24">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-bold text-gray-800">Filters</h2>
         <button
-          onClick={() => reset()}
+          type="button"
+          onClick={handleClearAll}
           className="text-blue-600 text-sm font-semibold hover:underline"
         >
           Reset All

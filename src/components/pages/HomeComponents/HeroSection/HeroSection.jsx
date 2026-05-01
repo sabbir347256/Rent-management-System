@@ -10,7 +10,7 @@ const stats = [
   { value: "100+", label: "Property Managers" },
 ];
   return (
-   <div className="container w-full min-h-[90vh] bg-white flex flex-col md:flex-row gap-12 ">
+   <div className="container w-full min-h-[90vh] bg-white flex flex-col md:flex-row gap-12 py-32 ">
       <div className="w-full md:w-1/2 flex flex-col items-start text-left space-y-8">
         <div className="bg-blue-50 text-blue-600 px-4 py-1.5 rounded-full text-sm font-semibold flex items-center gap-2 shadow-inner border border-blue-100">
           <span className="relative flex h-2 w-2">
