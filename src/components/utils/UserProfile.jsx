@@ -12,72 +12,102 @@ import {
   Loader2,
 } from "lucide-react";
 import { useForm } from "react-hook-form";
-import toast from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
+import { useLocation } from "react-router";
 
 const UserProfile = () => {
   const [loading, setLoading] = useState(true);
   const [profileData, setProfileData] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
 
   const { register, handleSubmit, reset } = useForm();
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      const token = localStorage.getItem("accessToken");
-      try {
-        const response = await fetch(
-          "http://localhost:5000/api/v1/user/get-profile",
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
+  const fetchProfile = async () => {
+    const token = localStorage.getItem("accessToken");
+    try {
+      const response = await fetch(
+        "http://localhost:5000/api/v1/user/get-profile",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
           },
-        );
-        const result = await response.json();
-        if (result.success) {
-          setProfileData(result.data);
-          reset({
-            fullName: result.data.fullName,
-            email: result.data.email,
-            phone: result.data.contactNo,
-            location: result.data.location || "Not Set",
-          });
-        }
-      } catch (error) {
-        toast.error("Failed to load profile",error);
-      } finally {
-        setLoading(false);
+        },
+      );
+      const result = await response.json();
+      if (result.success) {
+        setProfileData(result.data);
+        reset({
+          fullName: result.data.fullName,
+          phone: result.data.contactNo,
+          location: result.data.address || "",
+        });
       }
-    };
+    } catch (error) {
+      toast.error("Failed to load profile");
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchProfile();
   }, [reset]);
 
-  console.log(profileData)
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+      setPreviewUrl(URL.createObjectURL(file));
+    }
+  };
 
   const onSubmit = async (data) => {
     const loadingToast = toast.loading("Updating...");
     try {
       const token = localStorage.getItem("accessToken");
+      const formData = new FormData();
+
+      formData.append("fullName", data.fullName);
+      formData.append("contactNo", data.phone);
+      formData.append("address", data.location);
+
+      if (selectedFile) {
+        formData.append("profileImage", selectedFile);
+      }
+
       const response = await fetch(
-        "http://localhost:5000/api/v1/user/update-profile",
+        `http://localhost:5000/api/v1/user/update-profile/${profileData._id}`,
         {
           method: "PATCH",
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
           },
-          body: JSON.stringify(data),
+          body: formData,
         },
       );
-      if (response.ok) {
-        toast.success("Profile updated!", { id: loadingToast });
+
+      const result = await response.json();
+
+      if (result.success) {
+        toast.success("Profile updated successfully!", { id: loadingToast });
+        fetchProfile();
+        setSelectedFile(null);
+      } else {
+        toast.error(result.message || "Update failed", { id: loadingToast });
       }
     } catch (error) {
-      toast.error("Update failed", { id: loadingToast },error);
+      toast.error("An error occurred during update", { id: loadingToast });
     }
   };
+
+  const location = useLocation();
+
+  const isRentalPage = location.pathname === "/manager-dashboard/profile";
+
+  console.log(isRentalPage)
 
   if (loading) {
     return (
@@ -87,27 +117,31 @@ const UserProfile = () => {
     );
   }
   return (
-    <div className="min-h-screen bg-[#F8FAFC] pt-32 pb-20 px-4">
+    <div className={`min-h-screen ${isRentalPage ? "" : "pb-20 px-4 pt-32"}`}>
+      <Toaster position="top-center" reverseOrder={false} />
       <div className="container">
         <div className="flex flex-col lg:flex-row gap-8">
           <div className="w-full lg:w-1/3">
             <div className="bg-white rounded-md shadow-xl shadow-slate-200/50 border border-white p-8 relative overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-br from-emerald-500 to-teal-600" />
-
               <div className="relative flex flex-col items-center mt-12">
                 <div className="relative group">
                   <div className="w-36 h-36 rounded-[2.5rem] overflow-hidden border-8 border-white shadow-2xl transform rotate-3 group-hover:rotate-0 transition-transform duration-500">
                     <img
-                      src={
-                        profileData?.profileImage
-                      }
+                      src={previewUrl || profileData?.profileImage}
                       alt="Profile"
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <button className="absolute -bottom-2 -right-2 bg-white p-3 rounded-2xl shadow-lg text-emerald-600 hover:scale-110 transition-transform">
+                  <label className="absolute -bottom-2 -right-2 bg-white p-3 rounded-2xl shadow-lg text-emerald-600 hover:scale-110 transition-transform cursor-pointer">
                     <Camera size={20} />
-                  </button>
+                    <input
+                      type="file"
+                      className="hidden"
+                      onChange={handleFileChange}
+                      accept="image/*"
+                    />
+                  </label>
                 </div>
 
                 <div className="mt-6 text-center">
@@ -130,7 +164,7 @@ const UserProfile = () => {
                     </p>
                   </div>
                   <div className="rounded-lg p-6 border border-emerald-100 flex items-center justify-center">
-                    <p className="font-black text-emerald-600/60 uppercase tracking-widest">
+                    <p className="font-black text-emerald-600/60 uppercase tracking-widest text-center">
                       {profileData?.isActive}
                     </p>
                   </div>
@@ -138,6 +172,7 @@ const UserProfile = () => {
               </div>
             </div>
           </div>
+
           <div className="flex-1">
             <div className="bg-white rounded-md p-8 md:p-14 shadow-xl shadow-slate-200/50 border border-white">
               <div className="mb-12">
@@ -151,37 +186,41 @@ const UserProfile = () => {
 
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-10">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
-                  {[
-                    {
-                      id: "fullName",
-                      label: "Full Name",
-                      icon: <User size={16} />,
-                      type: "text",
-                    },
-                    {
-                      id: "email",
-                      label: "Email Address",
-                      icon: <Mail size={16} />,
-                      type: "email",
-                    },
-                    {
-                      id: "phone",
-                      label: "Phone Number",
-                      icon: <Phone size={16} />,
-                      type: "tel",
-                    },
-                  ].map((field) => (
-                    <div key={field.id} className="group">
-                      <label className="flex items-center gap-2 text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3 ml-1 group-focus-within:text-emerald-500 transition-colors">
-                        {field.icon} {field.label}
-                      </label>
+                  <div className="group">
+                    <label className="flex items-center gap-2 text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3 ml-1 group-focus-within:text-emerald-500 transition-colors">
+                      <User size={16} /> Full Name
+                    </label>
+                    <input
+                      {...register("fullName")}
+                      className="w-full bg-slate-50 border-2 border-slate-50 rounded-[1.5rem] px-6 py-4 text-slate-700 font-bold focus:bg-white focus:border-emerald-500/20 focus:ring-4 focus:ring-emerald-500/5 outline-none transition-all"
+                      type="text"
+                    />
+                  </div>
+
+                  <div className="group">
+                    <label className="flex items-center gap-2 text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3 ml-1">
+                      <Mail size={16} /> Email Address (Locked)
+                    </label>
+                    <div className="relative">
                       <input
-                        {...register(field.id)}
-                        className="w-full bg-slate-50 border-2 border-slate-50 rounded-[1.5rem] px-6 py-4 text-slate-700 font-bold focus:bg-white focus:border-emerald-500/20 focus:ring-4 focus:ring-emerald-500/5 outline-none transition-all"
-                        type={field.type}
+                        value={profileData?.email}
+                        readOnly
+                        className="w-full bg-slate-100 border-2 border-transparent rounded-[1.5rem] px-6 py-4 text-slate-400 font-bold cursor-not-allowed outline-none"
                       />
+                      <ShieldCheck className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-300" size={20} />
                     </div>
-                  ))}
+                  </div>
+
+                  <div className="group">
+                    <label className="flex items-center gap-2 text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3 ml-1 group-focus-within:text-emerald-500 transition-colors">
+                      <Phone size={16} /> Phone Number
+                    </label>
+                    <input
+                      {...register("phone")}
+                      className="w-full bg-slate-50 border-2 border-slate-50 rounded-[1.5rem] px-6 py-4 text-slate-700 font-bold focus:bg-white focus:border-emerald-500/20 focus:ring-4 focus:ring-emerald-500/5 outline-none transition-all"
+                      type="tel"
+                    />
+                  </div>
 
                   <div className="group">
                     <label className="flex items-center gap-2 text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3 ml-1">
@@ -193,10 +232,7 @@ const UserProfile = () => {
                         readOnly
                         className="w-full bg-slate-100 border-2 border-transparent rounded-[1.5rem] px-6 py-4 text-slate-400 font-bold cursor-not-allowed outline-none"
                       />
-                      <ShieldCheck
-                        className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-300"
-                        size={20}
-                      />
+                      <ShieldCheck className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-300" size={20} />
                     </div>
                   </div>
 
@@ -220,6 +256,11 @@ const UserProfile = () => {
                   </button>
                   <button
                     type="button"
+                    onClick={() => {
+                      reset();
+                      setPreviewUrl(null);
+                      setSelectedFile(null);
+                    }}
                     className="px-10 py-5 rounded-[2rem] bg-slate-50 text-slate-500 font-bold hover:bg-slate-100 transition-all"
                   >
                     Cancel

@@ -12,6 +12,7 @@ import { NavLink } from "react-router";
 import { AuthProvider } from "../../../AuthProvider/CreateContext";
 import { LogIn, ShieldCheck, User, LogOut } from "lucide-react";
 import { MdFavorite } from "react-icons/md";
+import { useQuery } from "@tanstack/react-query";
 
 const Navbar = () => {
   const { user, role, logOut } = useContext(AuthProvider);
@@ -19,6 +20,24 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+
+
+  const { data: profile, isLoading,} = useQuery({
+    queryKey: ['profile'],
+    queryFn: async () => {
+      const token = localStorage.getItem("accessToken");
+      const response = await fetch(
+        `http://localhost:5000/api/v1/user/get-profile`,
+        {
+          headers: { "Authorization": `Bearer ${token}` }
+        }
+      );
+      if (!response.ok) throw new Error("Status check failed");
+      return response.json();
+    },
+  });
+
+  console.log(profile)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -51,8 +70,8 @@ const Navbar = () => {
   return (
     <nav
       className={`fixed w-full z-50 transition-all duration-300 ${scrolled
-          ? "bg-blue-600 backdrop-blur-md shadow-lg py-2"
-          : "bg-[#0f172a] py-4"
+        ? "bg-blue-600 backdrop-blur-md shadow-lg py-2"
+        : "bg-[#0f172a] py-4"
         }`}
     >
       <div className="container px-6 mx-auto">
@@ -114,7 +133,7 @@ const Navbar = () => {
                       onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                       className="flex items-center gap-2 px-4 py-2 bg-white text-blue-600 font-bold rounded-full shadow-md hover:bg-blue-50 transition-all duration-300 border border-blue-100"
                     >
-                      <FaUserCircle className="w-6 h-6" />
+                      <img className="size-6 rounded-full" src={profile?.data?.profileImage} alt="" />
                       <span>Profile</span>
                     </button>
 
@@ -176,8 +195,8 @@ const Navbar = () => {
 
       <div
         className={`md:hidden absolute top-full left-0 w-full bg-white shadow-2xl transition-all duration-300 ease-in-out ${isOpen
-            ? "opacity-100 translate-y-0"
-            : "opacity-0 -translate-y-10 pointer-events-none"
+          ? "opacity-100 translate-y-0"
+          : "opacity-0 -translate-y-10 pointer-events-none"
           }`}
       >
         <div className="px-6 py-8 space-y-4">

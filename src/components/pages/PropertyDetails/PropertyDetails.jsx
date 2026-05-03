@@ -176,7 +176,7 @@ const PropertyDetails = () => {
   useEffect(() => {
     const geocodeAddress = async () => {
       const fullAddress =
-        property && `${property.address}, ${property.area}, ${property.city}`;
+        property && `$${property.city}`;
 
       try {
         const response = await fetch(
@@ -335,7 +335,7 @@ const PropertyDetails = () => {
                   Location
                 </p>
                 <p className="text-sm font-bold text-slate-700">
-                  {property && `${property.address}, ${property.area}`}
+                  {property && ` ${property.area},${property.city},${property.address}`}
                 </p>
               </div>
             </div>
