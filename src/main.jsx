@@ -31,6 +31,7 @@ import Profile from "./components/utils/Profile.jsx";
 import UserProfile from "./components/utils/UserProfile.jsx";
 import FavouriteRent from "./components/pages/userProfile/Favourite/FavouriteRent.jsx";
 import ManagerDashbaord from "./components/pages/ManagerAndAdmin/Manager/ManagerDashboard/ManagerDashbaord.jsx";
+import RentPrediction from "./components/pages/HomeComponents/RentPrediction/RentPrediction.jsx";
 
 const queryClient = new QueryClient();
 
@@ -46,6 +47,10 @@ const router = createBrowserRouter([
       {
         path: "/properties",
         element: <PropertyPage></PropertyPage>,
+      },
+      {
+        path: "/rent-prediction",
+        element: <RentPrediction></RentPrediction>,
       },
       {
         path: "/about",
