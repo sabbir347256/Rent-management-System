@@ -28,6 +28,7 @@ import "leaflet/dist/leaflet.css";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
+import { useQuery } from "@tanstack/react-query";
 
 let DefaultIcon = L.icon({
   iconUrl: markerIcon,
@@ -54,6 +55,7 @@ const PropertyDetails = () => {
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [averageRating, setAverageRating] = useState(0);
 
   const {
     register,
@@ -61,6 +63,31 @@ const PropertyDetails = () => {
     reset,
     formState: { errors },
   } = useForm();
+
+
+  const { data: propertyCount, isLoading } = useQuery({
+    queryKey: ["propertyCount", property?.user?._id],
+    queryFn: async () => {
+      if (!property?.user?._id) return { data: { totalProperties: 0 } };
+
+      const res = await fetch(
+        `http://localhost:5000/api/v1/property/count/${property.user._id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!res.ok) throw new Error("Failed to fetch property count");
+      return res.json();
+    },
+    enabled: !!property?.user?._id,
+  });
+
+  console.log(propertyCount)
+
 
   useEffect(() => {
     const fetchProperty = async () => {
@@ -86,7 +113,28 @@ const PropertyDetails = () => {
     if (id) fetchProperty();
   }, [id]);
 
-  console.log(property);
+
+  useEffect(() => {
+    const fetchAverageRating = async () => {
+      if (!property?.user?._id) return;
+
+      try {
+        const response = await fetch(
+          `http://localhost:5000/api/v1/review/average-rating/${property.user._id}`
+        );
+        const result = await response.json();
+
+        if (result.success && result.data) {
+          setAverageRating(result.data.averageRating);
+        }
+      } catch (error) {
+        console.error("Error fetching average rating:", error);
+      }
+    };
+
+    fetchAverageRating();
+  }, [property?.user?._id]);
+
 
   const onBookingSubmit = async (data) => {
     const token = localStorage.getItem("accessToken");
@@ -131,7 +179,34 @@ const PropertyDetails = () => {
     }
   };
 
+  useEffect(() => {
+    const fetchUserRating = async () => {
+      if (!user?.userId || !property?.user?._id) return;
+
+      try {
+        const token = localStorage.getItem("accessToken");
+        const response = await fetch(
+          `http://localhost:5000/api/v1/review/user-rating?userId=${user.userId}&managerId=${property.user._id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const result = await response.json();
+        if (result.success && result.data) {
+          setRating(result.data.rating);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchUserRating();
+  }, [user?.userId, property?.user?._id]);
+
   const handleRatingSubmit = async (value) => {
+
     if (!user?.userId || !property?.user?._id) {
       return toast.error("User information is missing");
     }
@@ -158,6 +233,8 @@ const PropertyDetails = () => {
 
       const result = await response.json();
 
+      console.log(result)
+
       if (response.ok) {
         toast.success("Rating updated!", { id: loadingToast });
         setRating(value);
@@ -167,7 +244,7 @@ const PropertyDetails = () => {
         });
       }
     } catch (error) {
-      toast.error("Something went wrong", { id: loadingToast }, error);
+      toast.error("Something went wrong", { id: loadingToast });
     }
   };
 
@@ -416,11 +493,11 @@ const PropertyDetails = () => {
                   <div className="flex items-center gap-2 mt-1">
                     <span className="text-yellow-500 flex items-center text-xs font-bold">
                       <Star className="w-3 h-3 fill-current mr-1" />{" "}
-                      {property?.user?.rating || "4.9"}
+                      {averageRating > 0 ? averageRating : (property?.user?.rating || "0.0")}
                     </span>
                     <span className="text-gray-300 text-xs">•</span>
                     <span className="text-gray-500 text-xs">
-                      {property?.user?.totalProperties || "45"} properties
+                      {propertyCount?.data?.totalProperties || "45"} properties
                     </span>
                   </div>
                 </div>
@@ -436,12 +513,11 @@ const PropertyDetails = () => {
                       key={star}
                       type="button"
                       onClick={() => handleRatingSubmit(star)}
-                      onMouseEnter={() => setHover(star)}
-                      onMouseLeave={() => setHover(0)}
-                      className="transition-transform active:scale-90"
+                      className={`transition-transform ${rating > 0 ? " cursor-pointer" : "active:scale-90 cursor-pointer"}`}
                     >
                       <Star
-                        className={`w-5 h-5 ${star <= (hover || rating) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`}
+                        className={`w-5 h-5 ${star <= (hover || rating) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
+                          }`}
                       />
                     </button>
                   ))}
@@ -494,14 +570,6 @@ const PropertyDetails = () => {
                       </div>
 
                       <div className="grid grid-cols-1 gap-4 py-4 border-y border-slate-100">
-                        {/* <div className="text-center">
-                          <p className="text-xs text-slate-400 uppercase font-bold">
-                            Experience
-                          </p>
-                          <p className="text-lg font-black text-slate-700">
-                            5+ Years
-                          </p>
-                        </div> */}
                         <div className=" border-l border-slate-100">
                           <p className="text-xs text-slate-400 uppercase font-bold">
                             Response
