@@ -78,13 +78,13 @@ const Navbar = () => {
         <div className="flex justify-between items-center">
           <div className="flex items-center space-x-2">
             <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-blue-200 shadow">
-              <span className="text-white font-bold text-xl">R</span>
+              <span className="text-white font-bold text-xl">S</span>
             </div>
             <span
               className={`text-2xl font-extrabold tracking-tight ${scrolled ? "text-white" : "text-blue-700"
                 }`}
             >
-              Rent<span className="text-blue-500">Ease</span>
+              Sohoj<span className="text-blue-500">Rent</span>
             </span>
           </div>
 

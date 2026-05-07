@@ -36,7 +36,7 @@ const Footer = () => {
             <div className="flex items-center space-x-2">
               <span className="text-2xl">🏠</span>
               <span className="text-white text-2xl font-bold tracking-tight">
-                RentEase
+                SohojRent
               </span>
             </div>
             <p className="text-sm leading-relaxed max-w-xs">
@@ -78,7 +78,7 @@ const Footer = () => {
 
         <div className="pt-8 border-t border-gray-800/50 text-center">
           <p className="text-xs tracking-widest text-gray-500">
-            © {new Date().getFullYear()} RentEase. All rights reserved.
+            © {new Date().getFullYear()} SohojRent. All rights reserved.
           </p>
         </div>
       </div>

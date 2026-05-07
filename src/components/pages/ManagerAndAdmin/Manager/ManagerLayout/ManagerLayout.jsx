@@ -146,7 +146,7 @@ const ManagerLayout = () => {
       >
         <div className="p-6 flex items-center justify-between flex-shrink-0">
           <h1 className="text-xl font-bold text-emerald-600">
-            RentEase <span className="text-amber-500"></span>
+            SohojRent <span className="text-amber-500"></span>
           </h1>
           <button
             onClick={() => setIsOpen(false)}

@@ -17,7 +17,7 @@ const About = () => {
         <div className="min-h-screen bg-white text-gray-700 py-32">
             <div className=''>
                 <header className="pb-16 px-4 text-center border-b border-gray-100">
-                    <h1 className="text-4xl font-extrabold text-gray-900 mb-2">About RentEase</h1>
+                    <h1 className="text-4xl font-extrabold text-gray-900 mb-2">About SohojRent</h1>
                     <p className="text-lg text-gray-600">Your trusted platform to find rental properties across Dhaka</p>
                 </header>
 
@@ -26,7 +26,7 @@ const About = () => {
                     <section>
                         <h2 className="text-2xl font-bold text-blue-600 mb-4">Our Mission</h2>
                         <p className="leading-relaxed text-gray-700 max-w-4xl">
-                            At RentEase, our mission is to simplify the rental process for tenants and property managers alike.
+                            At SohojRent, our mission is to simplify the rental process for tenants and property managers alike.
                             We provide a transparent platform to find verified properties, compare rent prices, and explore
                             homes that fit your lifestyle.
                         </p>
@@ -35,7 +35,7 @@ const About = () => {
                     <section>
                         <h2 className="text-2xl font-bold text-blue-600 mb-4">Our Story</h2>
                         <p className="leading-relaxed text-gray-700 max-w-4xl">
-                            Founded in 2025, RentEase started as a small initiative to connect tenants with trustworthy
+                            Founded in 2025, SohojRent started as a small initiative to connect tenants with trustworthy
                             property managers in Dhaka. Today, we serve thousands of users with detailed property listings,
                             rent prediction tools, and a seamless user experience.
                         </p>
@@ -54,8 +54,8 @@ const About = () => {
                         <h2 className="text-2xl font-bold text-blue-600 mb-4">Contact Us</h2>
                         <p className="text-gray-700">
                             Have questions or want to list your property? Reach out to us at{' '}
-                            <a href="mailto:support@rentease.com" className="text-blue-500 hover:underline">
-                                support@rentease.com
+                            <a href="mailto:support@SohojRent.com" className="text-blue-500 hover:underline">
+                                support@SohojRent.com
                             </a>{' '}
                             or call{' '}
                             <span className="font-semibold text-gray-800">+880 1234 567 890</span>.
