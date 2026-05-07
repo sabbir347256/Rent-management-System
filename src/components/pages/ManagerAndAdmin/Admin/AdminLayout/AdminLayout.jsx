@@ -36,6 +36,41 @@ import SliderItem from "../../../Shared/SliderItem";
 
 const AdminLayout = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [profileData, setProfileData] = useState(null);
+
+
+  const fetchProfile = async () => {
+    const token = localStorage.getItem("accessToken");
+    try {
+      const response = await fetch(
+        "http://localhost:5000/api/v1/user/get-profile",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+      const result = await response.json();
+      if (result.success) {
+        setProfileData(result.data);
+        reset({
+          fullName: result.data.fullName,
+          phone: result.data.contactNo,
+          location: result.data.address || "",
+        });
+      }
+    } catch (error) {
+      toast.error("Failed to load profile");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProfile();
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -101,6 +136,8 @@ const AdminLayout = () => {
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
+
+
   return (
     <div className="h-screen flex overflow-hidden">
       {isOpen && (
@@ -111,9 +148,8 @@ const AdminLayout = () => {
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-64 bg-[#0f172a] text-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 flex flex-col ${
-          isOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-[#0f172a] text-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 flex flex-col ${isOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         <div className="p-6 flex items-center justify-between flex-shrink-0">
           <h1 className="text-xl font-bold text-emerald-600">
@@ -176,20 +212,6 @@ const AdminLayout = () => {
             className="flex items-center gap-4 md:justify-end w-full"
             ref={dropdownRef}
           >
-            <div className="flex items-center gap-3 pr-4 border-r border-orange-100">
-              <button className="relative p-1 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors">
-                <Bell size={20} fill="currentColor" className="text-gray-700" />
-                <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-emerald-600 border-2 border-white rounded-full"></span>
-              </button>
-
-              <button className="p-1 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors">
-                <Settings
-                  size={20}
-                  fill="currentColor"
-                  className="text-gray-700"
-                />
-              </button>
-            </div>
 
             <div className="relative">
               <div
@@ -201,7 +223,7 @@ const AdminLayout = () => {
               >
                 <div className="relative w-10 h-10">
                   <img
-                    src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=100&auto=format&fit=crop"
+                    src={profileData?.profileImage}
                     alt="Admin User"
                     className="w-full h-full rounded-full object-cover border-2 border-orange-50"
                   />
@@ -222,14 +244,12 @@ const AdminLayout = () => {
 
               {porfileopen && (
                 <div className="absolute right-0 top-full mt-2 w-48 bg-white border border-orange-100 rounded-xl shadow-lg py-2 z-50">
-                  <button className="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 transition-colors">
-                    <User size={16} className="text-gray-500" />
-                    My Profile
-                  </button>
-                  <button className="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 transition-colors">
-                    <Settings size={16} className="text-gray-500" />
-                    Account Settings
-                  </button>
+                  <NavLink to='/admin-dashboard/profile'>
+                    <button className="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 transition-colors">
+                      <User size={16} className="text-gray-500" />
+                      My Profile
+                    </button>
+                  </NavLink>
                   <div className="h-px bg-gray-100 my-1 mx-2"></div>
                   <button className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors">
                     <LogOut size={16} />

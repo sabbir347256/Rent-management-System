@@ -35,6 +35,7 @@ import { MdReviews } from "react-icons/md";
 const ManagerLayout = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [profileData, setProfileData] = useState(null);
+  const [isloading,setLoading] = useState();
 
 
   const fetchProfile = async () => {
@@ -106,7 +107,7 @@ const ManagerLayout = () => {
           icon: User2,
         },
         {
-          path: "/manager-dashboard/all-reviews",
+          path: "/manager-dashboard/all-rating",
           label: "All reviews",
           icon: MdReviews,
         },
@@ -127,6 +128,9 @@ const ManagerLayout = () => {
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
+
+
+
   return (
     <div className="h-screen flex overflow-hidden">
       {isOpen && (
@@ -201,21 +205,6 @@ const ManagerLayout = () => {
             className="flex items-center gap-4 md:justify-end w-full"
             ref={dropdownRef}
           >
-            <div className="flex items-center gap-3 pr-4 border-r border-orange-100">
-              <button className="relative p-1 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors">
-                <Bell size={20} fill="currentColor" className="text-gray-700" />
-                <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-emerald-600 border-2 border-white rounded-full"></span>
-              </button>
-
-              <button className="p-1 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors">
-                <Settings
-                  size={20}
-                  fill="currentColor"
-                  className="text-gray-700"
-                />
-              </button>
-            </div>
-
             <div className="relative">
               <div
                 onClick={(e) => {

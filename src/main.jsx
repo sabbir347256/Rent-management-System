@@ -32,6 +32,7 @@ import UserProfile from "./components/utils/UserProfile.jsx";
 import FavouriteRent from "./components/pages/userProfile/Favourite/FavouriteRent.jsx";
 import ManagerDashbaord from "./components/pages/ManagerAndAdmin/Manager/ManagerDashboard/ManagerDashbaord.jsx";
 import RentPrediction from "./components/pages/HomeComponents/RentPrediction/RentPrediction.jsx";
+import ManagerRating from "./components/pages/ManagerAndAdmin/Manager/ManagerRating/ManagerRating.jsx";
 
 const queryClient = new QueryClient();
 
@@ -117,6 +118,10 @@ const router = createBrowserRouter([
         path: "all-booking",
         element: <Allbooking></Allbooking>
       },
+      {
+        path: "profile",
+        element: <UserProfile></UserProfile>
+      },
     ],
   },
   {
@@ -155,6 +160,10 @@ const router = createBrowserRouter([
       {
         path : "profile",
         element : <UserProfile></UserProfile>
+      },
+      {
+        path : "all-rating",
+        element : <ManagerRating></ManagerRating>
       }
     ],
   },

@@ -105,9 +105,8 @@ const UserProfile = () => {
 
   const location = useLocation();
 
-  const isRentalPage = location.pathname === "/manager-dashboard/profile";
+  const isRentalPage = location.pathname === "/manager-dashboard/profile" || "/admin-dashboard/profile";
 
-  console.log(isRentalPage)
 
   if (loading) {
     return (
@@ -156,19 +155,6 @@ const UserProfile = () => {
                   </p>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 w-full mt-10">
-                  <div className="bg-slate-50 rounded-[2rem] p-6 border border-slate-100 text-center">
-                    <p className="text-2xl font-black text-slate-800">12</p>
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                      Bookings
-                    </p>
-                  </div>
-                  <div className="rounded-lg p-6 border border-emerald-100 flex items-center justify-center">
-                    <p className="font-black text-emerald-600/60 uppercase tracking-widest text-center">
-                      {profileData?.isActive}
-                    </p>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
