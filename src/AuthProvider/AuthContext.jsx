@@ -1,24 +1,40 @@
-import {  useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AuthProvider } from "./CreateContext";
 import { jwtDecode } from "jwt-decode";
 
 const AuthContext = ({ children }) => {
   const [token, setToken] = useState(() => localStorage.getItem("accessToken"));
+  const [loading, setLoading] = useState(true);
 
   const user = useMemo(() => {
-    if (!token) return null;
-    try {
-      return jwtDecode(token);
-    } catch (error) {
-      console.error("JWT Decode Error:", error);
+    if (!token) {
+      setLoading(false);
       return null;
     }
+    try {
+      const decoded = jwtDecode(token);
+      setLoading(false);
+      return decoded;
+    } catch (error) {
+      console.error("JWT Decode Error:", error);
+      setLoading(false);
+      return null;
+    }
+  }, [token]);
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("accessToken");
+    if (storedToken !== token) {
+      setToken(storedToken);
+    }
+    setLoading(false);
   }, [token]);
 
   const authInfo = {
     setToken,
     user,
-    role: user?.role
+    role: user?.role,
+    loading
   };
 
   return (

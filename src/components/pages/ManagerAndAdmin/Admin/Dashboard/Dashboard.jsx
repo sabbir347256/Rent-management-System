@@ -22,7 +22,6 @@ const Dashboard = () => {
             Good morning, Admin
           </h1>
           <p className="text-gray-500 mt-1">
-            Here's what's happening with Pura Vida today
           </p>
         </div>
       </div>

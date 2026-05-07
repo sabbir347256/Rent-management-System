@@ -33,6 +33,8 @@ import FavouriteRent from "./components/pages/userProfile/Favourite/FavouriteRen
 import ManagerDashbaord from "./components/pages/ManagerAndAdmin/Manager/ManagerDashboard/ManagerDashbaord.jsx";
 import RentPrediction from "./components/pages/HomeComponents/RentPrediction/RentPrediction.jsx";
 import ManagerRating from "./components/pages/ManagerAndAdmin/Manager/ManagerRating/ManagerRating.jsx";
+import AdminPrivateRoute from "./components/PrivateRoute/AdminPrivateRoute.jsx";
+import ManagerPrivateRoute from "./components/PrivateRoute/ManagerPrivateRoute.jsx";
 
 const queryClient = new QueryClient();
 
@@ -87,7 +89,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/admin-dashboard",
-    element: <AdminLayout></AdminLayout>,
+    element: <AdminPrivateRoute><AdminLayout></AdminLayout></AdminPrivateRoute>,
     children: [
       {
         index: true,
@@ -126,7 +128,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/manager-dashboard",
-    element: <ManagerLayout></ManagerLayout>,
+    element: <ManagerPrivateRoute><ManagerLayout></ManagerLayout></ManagerPrivateRoute>,
     children: [
       {
         index: true,

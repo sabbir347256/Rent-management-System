@@ -105,7 +105,7 @@ const UserProfile = () => {
 
   const location = useLocation();
 
-  const isRentalPage = location.pathname === "/manager-dashboard/profile" || "/admin-dashboard/profile";
+  const isRentalPage = location.pathname === "/manager-dashboard/profile" || location.pathname === "/admin-dashboard/profile";
 
 
   if (loading) {

@@ -11,9 +11,11 @@ import {
   Camera,
 } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
+import { useNavigate } from "react-router";
 const Signup = () => {
   const [loading, setLoading] = useState(false);
   const { register, handleSubmit } = useForm();
+  const navigate = useNavigate();
 
   const onSubmit = async (data) => {
     setLoading(true);
@@ -43,16 +45,21 @@ const Signup = () => {
       const result = await response.json();
 
       console.log(result);
+      console.log(response);
 
       if (response.ok) {
-        toast.success("Registration Successful!");
+        localStorage.setItem("accessToken", result.data.accessToken);
+        toast.success(result.message);
+        setTimeout(() => {
+          navigate('/', { replace: true });
+          window.location.reload();
+        }, 1000);
         console.log("Success:", result);
       } else {
-        toast.error(result.errors[0].message || "Registration failed");
+        toast.error(result.message);
       }
     } catch (error) {
       console.error("Error:", error);
-      toast.error("Something went wrong!");
     } finally {
       setLoading(false);
     }
