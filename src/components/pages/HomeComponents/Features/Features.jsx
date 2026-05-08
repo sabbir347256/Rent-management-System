@@ -6,7 +6,7 @@ const Features = () => {
       title: "Verified Listings",
       description:
         "Every property is verified by our team to ensure authenticity and quality",
-      icon: "🏠", // Anda bisa mengganti dengan icon image/lucide-react
+      icon: "🏠",
       highlight: true,
     },
     {

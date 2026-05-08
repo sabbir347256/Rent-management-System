@@ -35,6 +35,7 @@ import RentPrediction from "./components/pages/HomeComponents/RentPrediction/Ren
 import ManagerRating from "./components/pages/ManagerAndAdmin/Manager/ManagerRating/ManagerRating.jsx";
 import AdminPrivateRoute from "./components/PrivateRoute/AdminPrivateRoute.jsx";
 import ManagerPrivateRoute from "./components/PrivateRoute/ManagerPrivateRoute.jsx";
+import Messenger from "./components/pages/Messenger/Messenger.jsx";
 
 const queryClient = new QueryClient();
 
@@ -83,6 +84,10 @@ const router = createBrowserRouter([
       {
         path: "/my-favourites",
         element: <FavouriteRent></FavouriteRent>
+      },
+      {
+        path : "/messenger/:senderId/:receiverId",
+        element: <Messenger></Messenger>
       },
       
     ],

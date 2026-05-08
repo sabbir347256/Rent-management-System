@@ -17,8 +17,9 @@ import {
   Info,
   ShieldCheckIcon,
   X,
+  Send,
 } from "lucide-react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { Controller, useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
 import { AuthProvider } from "../../../AuthProvider/CreateContext";
@@ -47,7 +48,6 @@ function RecenterAutomatically({ lat, lng }) {
 
 const PropertyDetails = () => {
   const { user } = useContext(AuthProvider);
-  console.log(user);
   const { id } = useParams();
   const [property, setProperty] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -86,7 +86,7 @@ const PropertyDetails = () => {
     enabled: !!property?.user?._id,
   });
 
-  console.log(propertyCount)
+  console.log(property)
 
 
   useEffect(() => {
@@ -276,6 +276,26 @@ const PropertyDetails = () => {
     }
   }, [property]);
 
+  console.log(user)
+
+
+
+  const navigate = useNavigate();
+
+  const handleMessengerClick = () => {
+    const senderId = user?.userId; 
+    const receiverId = property?.user?._id; 
+
+    if (!senderId) {
+      alert("Please log in to send a message");
+      return;
+    }
+
+    navigate(`/messenger/${senderId}/${receiverId}`);
+  };
+
+
+
   if (loading) return <p className="text-center p-10">Loading...</p>;
 
   return (
@@ -448,6 +468,13 @@ const PropertyDetails = () => {
                 >
                   <MessageSquare className="w-5 h-5 group-hover:scale-110 transition" />{" "}
                   Contact Owner
+                </button>
+                <button
+                  onClick={handleMessengerClick}
+                  className="w-full bg-emerald-500 text-white py-4 rounded-2xl font-black flex items-center justify-center gap-2 hover:bg-emerald-600 transition shadow-lg shadow-emerald-100 group"
+                >
+                  <Send className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition" />{" "}
+                  Open Messenger
                 </button>
               </div>
 

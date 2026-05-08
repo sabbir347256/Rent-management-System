@@ -10,7 +10,7 @@ import {
 } from "react-icons/fa";
 import { NavLink } from "react-router";
 import { AuthProvider } from "../../../AuthProvider/CreateContext";
-import { LogIn, ShieldCheck, User, LogOut } from "lucide-react";
+import { LogIn, ShieldCheck, User, LogOut, MessageCircle } from "lucide-react";
 import { MdFavorite } from "react-icons/md";
 import { useQuery } from "@tanstack/react-query";
 
@@ -22,7 +22,7 @@ const Navbar = () => {
   const dropdownRef = useRef(null);
 
 
-  const { data: profile, isLoading,} = useQuery({
+  const { data: profile, isLoading, } = useQuery({
     queryKey: ['profile'],
     queryFn: async () => {
       const token = localStorage.getItem("accessToken");
@@ -37,7 +37,24 @@ const Navbar = () => {
     },
   });
 
-  console.log(profile)
+
+  const [notifications, setNotifications] = useState([]);
+  const [showPopup, setShowPopup] = useState(false);
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      if (!user?.userId) {
+        console.log('not route')
+        return 
+      };
+      const res = await fetch(`http://localhost:5000/api/v1/messages/inbox/${user?.userId}`);
+      const data = await res.json();
+      console.log(data)
+      if (data.success) setNotifications(data.data);
+    };
+    fetchNotifications();
+  }, [user]);
+
 
   useEffect(() => {
     const handleScroll = () => {
@@ -104,6 +121,42 @@ const Navbar = () => {
                 {item.name}
               </NavLink>
             ))}
+          </div>
+          <div className="relative">
+            <button onClick={() => setShowPopup(!showPopup)} className="relative p-2">
+              <MessageCircle className="w-6 h-6 text-gray-600" />
+              {notifications.length > 0 && (
+                <span className="absolute top-0 right-0 bg-red-500 text-white text-[10px] rounded-full h-4 w-4 flex items-center justify-center">
+                  {notifications.length}
+                </span>
+              )}
+            </button>
+
+            {showPopup && (
+              <div className="absolute right-0 mt-2 w-72 bg-white border rounded-xl shadow-2xl z-50 overflow-hidden">
+                <div className="p-3 border-b bg-gray-50 font-bold">Messages</div>
+                <div className="max-h-80 overflow-y-auto">
+                  {notifications.length === 0 ? (
+                    <p className="p-4 text-center text-gray-500">No new messages</p>
+                  ) : (
+                    notifications.map((notif) => (
+                      <NavLink
+                        key={notif._id}
+                        to={`/messenger/${user.userId}/${notif._id}`}
+                        onClick={() => setShowPopup(false)}
+                        className="flex items-center gap-3 p-3 hover:bg-blue-50 transition border-b last:border-0"
+                      >
+                        <img src={notif.profileImage} className="w-10 h-10 rounded-full border" alt="" />
+                        <div className="flex-1 overflow-hidden">
+                          <p className="font-semibold text-sm">{notif.fullName}</p>
+                          <p className="text-xs text-gray-500 truncate">{notif.message}</p>
+                        </div>
+                      </NavLink>
+                    ))
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="hidden md:flex items-center space-x-3">
