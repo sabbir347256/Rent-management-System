@@ -85,11 +85,8 @@ const router = createBrowserRouter([
         path: "/my-favourites",
         element: <FavouriteRent></FavouriteRent>
       },
-      {
-        path : "/messenger/:senderId/:receiverId",
-        element: <Messenger></Messenger>
-      },
-      
+
+
     ],
   },
   {
@@ -165,12 +162,12 @@ const router = createBrowserRouter([
         element: <Allbooking></Allbooking>
       },
       {
-        path : "profile",
-        element : <UserProfile></UserProfile>
+        path: "profile",
+        element: <UserProfile></UserProfile>
       },
       {
-        path : "all-rating",
-        element : <ManagerRating></ManagerRating>
+        path: "all-rating",
+        element: <ManagerRating></ManagerRating>
       }
     ],
   },
@@ -181,6 +178,10 @@ const router = createBrowserRouter([
   {
     path: "/signup",
     element: <Signup></Signup>,
+  },
+  {
+    path: "/messenger/:senderId/:receiverId",
+    element: <Messenger></Messenger>
   },
 ]);
 

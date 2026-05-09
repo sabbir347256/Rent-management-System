@@ -10,7 +10,7 @@ import {
 } from "react-icons/fa";
 import { NavLink } from "react-router";
 import { AuthProvider } from "../../../AuthProvider/CreateContext";
-import { LogIn, ShieldCheck, User, LogOut, MessageCircle } from "lucide-react";
+import { LogIn, ShieldCheck, User, LogOut, MessageCircle, MoreHorizontal } from "lucide-react";
 import { MdFavorite } from "react-icons/md";
 import { useQuery } from "@tanstack/react-query";
 
@@ -45,7 +45,7 @@ const Navbar = () => {
     const fetchNotifications = async () => {
       if (!user?.userId) {
         console.log('not route')
-        return 
+        return
       };
       const res = await fetch(`http://localhost:5000/api/v1/messages/inbox/${user?.userId}`);
       const data = await res.json();
@@ -54,6 +54,14 @@ const Navbar = () => {
     };
     fetchNotifications();
   }, [user]);
+
+
+  const unreadCount = notifications.filter((notif) => notif.isRead === false).length;
+
+  const formatTime = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
 
 
   useEffect(() => {
@@ -122,44 +130,86 @@ const Navbar = () => {
               </NavLink>
             ))}
           </div>
-          <div className="relative">
-            <button onClick={() => setShowPopup(!showPopup)} className="relative p-2">
-              <MessageCircle className="w-6 h-6 text-gray-600" />
-              {notifications.length > 0 && (
-                <span className="absolute top-0 right-0 bg-red-500 text-white text-[10px] rounded-full h-4 w-4 flex items-center justify-center">
-                  {notifications.length}
-                </span>
-              )}
-            </button>
 
-            {showPopup && (
-              <div className="absolute right-0 mt-2 w-72 bg-white border rounded-xl shadow-2xl z-50 overflow-hidden">
-                <div className="p-3 border-b bg-gray-50 font-bold">Messages</div>
-                <div className="max-h-80 overflow-y-auto">
-                  {notifications.length === 0 ? (
-                    <p className="p-4 text-center text-gray-500">No new messages</p>
-                  ) : (
-                    notifications.map((notif) => (
-                      <NavLink
-                        key={notif._id}
-                        to={`/messenger/${user.userId}/${notif._id}`}
-                        onClick={() => setShowPopup(false)}
-                        className="flex items-center gap-3 p-3 hover:bg-blue-50 transition border-b last:border-0"
-                      >
-                        <img src={notif.profileImage} className="w-10 h-10 rounded-full border" alt="" />
-                        <div className="flex-1 overflow-hidden">
-                          <p className="font-semibold text-sm">{notif.fullName}</p>
-                          <p className="text-xs text-gray-500 truncate">{notif.message}</p>
-                        </div>
-                      </NavLink>
-                    ))
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
 
           <div className="hidden md:flex items-center space-x-3">
+            <div className="relative inline-block">
+              <button
+                onClick={() => setShowPopup(!showPopup)}
+                className={`relative p-2 rounded-full transition-all ${showPopup ? "bg-gray-100" : "hover:bg-gray-50"
+                  }`}
+              >
+                <MessageCircle className="w-6 h-6 text-gray-600" />
+                {unreadCount > 0 && (
+                  <span className="absolute top-0 right-0 bg-red-500 text-white text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center border-2 border-white">
+                    {unreadCount}
+                  </span>
+                )}
+              </button>
+
+              {showPopup && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setShowPopup(false)}></div>
+
+                  <div className="absolute right-0 mt-2 w-80 bg-white border border-gray-200 rounded-2xl shadow-2xl z-50 overflow-hidden">
+                    <div className="p-4 border-b flex justify-between items-center bg-white">
+                      <h3 className="font-bold text-xl text-gray-900">Chats</h3>
+                    </div>
+
+                    <div className="max-h-[400px] overflow-y-auto">
+                      {notifications.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center py-10 px-4 text-center">
+                          <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-3">
+                            <MessageCircle className="w-8 h-8 text-gray-300" />
+                          </div>
+                          <p className="text-gray-500 font-medium text-sm">No messages yet</p>
+                        </div>
+                      ) : (
+                        notifications.map((notif) => (
+                          <NavLink
+                            key={notif._id}
+                            to={`/messenger/${user.userId}/${notif._id}`}
+                            onClick={() => setShowPopup(false)}
+                            className={`flex items-center gap-3 p-3 transition-all hover:bg-gray-50 ${notif.isRead === false ? "bg-blue-50/40" : ""
+                              }`}
+                          >
+                            <div className="relative flex-shrink-0">
+                              <img
+                                src={notif.profileImage || "https://ui-avatars.com/api/?name=" + notif.fullName}
+                                className="w-12 h-12 rounded-full object-cover border border-gray-100 shadow-sm"
+                                alt=""
+                              />
+                              <div className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white ${notif.isRead === false ? "bg-blue-500" : "bg-gray-300"
+                                }`}></div>
+                            </div>
+
+                            <div className="flex-1 min-w-0">
+                              <div className="flex justify-between items-baseline">
+                                <p className={`text-sm truncate ${notif.isRead === false ? "font-bold text-black" : "font-semibold text-gray-700"}`}>
+                                  {notif.fullName}
+                                </p>
+                                <span className={`text-[10px] whitespace-nowrap ml-2 ${notif.isRead === false ? "text-blue-600 font-bold" : "text-gray-400"}`}>
+                                  {formatTime(notif.createdAt)}
+                                </span>
+                              </div>
+                              <p className={`text-xs truncate pr-2 ${notif.isRead === false ? "text-gray-900 font-semibold" : "text-gray-500"}`}>
+                                {notif.message}
+                              </p>
+                            </div>
+
+                            {notif.isRead === false && (
+                              <div className="w-2.5 h-2.5 bg-blue-600 rounded-full flex-shrink-0"></div>
+                            )}
+                          </NavLink>
+                        ))
+                      )}
+                    </div>
+
+
+                  </div>
+                </>
+              )}
+            </div>
             {user ? (
               <>
                 {role === "MANAGER" && (
@@ -280,11 +330,11 @@ const Navbar = () => {
                 My Profile
               </NavLink>
               <NavLink
-                to="/my-profile"
+                to="/my-favourites"
                 onClick={() => setIsOpen(false)}
                 className="block py-3 text-center font-bold text-blue-600 border border-blue-100 rounded-xl"
               >
-                My Profile
+                Favourites
               </NavLink>
               <button
                 onClick={() => {
