@@ -36,6 +36,7 @@ import ManagerRating from "./components/pages/ManagerAndAdmin/Manager/ManagerRat
 import AdminPrivateRoute from "./components/PrivateRoute/AdminPrivateRoute.jsx";
 import ManagerPrivateRoute from "./components/PrivateRoute/ManagerPrivateRoute.jsx";
 import Messenger from "./components/pages/Messenger/Messenger.jsx";
+import CompareProperty from "./components/pages/CompareProperty/CompareProperty.jsx";
 
 const queryClient = new QueryClient();
 
@@ -67,6 +68,10 @@ const router = createBrowserRouter([
       {
         path: "/property-details/:id",
         element: <PropertyDetails></PropertyDetails>,
+      },
+      {
+        path: "/compare/:id",
+        element: <CompareProperty></CompareProperty>,
       },
       {
         path: "/my-properties",

@@ -33,10 +33,14 @@ import {
 } from "lucide-react";
 import { NavLink, Outlet } from "react-router";
 import SliderItem from "../../../Shared/SliderItem";
+import useLogout from "../../../../utils/useLogout";
+import { Toaster } from "react-hot-toast";
 
 const AdminLayout = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [profileData, setProfileData] = useState(null);
+
+  const logout = useLogout();
 
 
   const fetchProfile = async () => {
@@ -146,6 +150,7 @@ const AdminLayout = () => {
           onClick={() => setIsOpen(false)}
         />
       )}
+      <Toaster position="top-center" reverseOrder={false} />
 
       <aside
         className={`fixed inset-y-0 left-0 z-50 w-64 bg-[#0f172a] text-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 flex flex-col ${isOpen ? "translate-x-0" : "-translate-x-full"
@@ -193,7 +198,7 @@ const AdminLayout = () => {
         </nav>
 
         <div className="p-4 border-t border-gray-100 flex-shrink-0">
-          <button className="flex items-center gap-3 text-red-600 hover:bg-red-50 w-full px-4 py-2.5 rounded-lg transition-colors text-sm font-medium">
+          <button onClick={logout} className="flex items-center gap-3 text-red-600 hover:bg-red-50 w-full px-4 py-2.5 rounded-lg transition-colors text-sm font-medium">
             <LogOut size={18} /> Sign Out
           </button>
         </div>
@@ -251,7 +256,7 @@ const AdminLayout = () => {
                     </button>
                   </NavLink>
                   <div className="h-px bg-gray-100 my-1 mx-2"></div>
-                  <button className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors">
+                  <button onClick={logout} className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors">
                     <LogOut size={16} />
                     Logout
                   </button>

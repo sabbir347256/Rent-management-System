@@ -68,8 +68,6 @@ const SingleCard = ({ data }) => {
   };
 
 
-  console.log(data)
-
   return (
     <div>
       <div className="bg-white rounded-[2rem] overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl transition-all duration-300 group">

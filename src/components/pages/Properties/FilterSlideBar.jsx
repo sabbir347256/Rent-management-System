@@ -1,7 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 
-const FilterSlideBar = ({ onFilter,onReset }) => {
+const FilterSlideBar = ({ onFilter, onReset }) => {
   const { register, handleSubmit, reset } = useForm();
 
 
@@ -51,6 +51,17 @@ const FilterSlideBar = ({ onFilter,onReset }) => {
             <option>Apartment</option>
             <option>House</option>
           </select>
+        </div>
+
+        <div>
+          <label className="block text-sm font-bold text-gray-700 mb-2">
+            Location / Area
+          </label>
+          <input
+            {...register("areaSearch")}
+            className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Enter city, area or address..."
+          />
         </div>
 
         <div>

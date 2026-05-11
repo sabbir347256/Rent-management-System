@@ -13,14 +13,23 @@ import { AuthProvider } from "../../../AuthProvider/CreateContext";
 import { LogIn, ShieldCheck, User, LogOut, MessageCircle, MoreHorizontal } from "lucide-react";
 import { MdFavorite } from "react-icons/md";
 import { useQuery } from "@tanstack/react-query";
+import useLogout from "../../utils/useLogout";
+import { Toaster } from "react-hot-toast";
 
 const Navbar = () => {
-  const { user, role, logOut } = useContext(AuthProvider);
+  const { user, role } = useContext(AuthProvider);
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
+  const logout = useLogout();
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get("logout") === "success") {
+      toast.success("Logged out successfully!");
+    }
+  }, [location]);
 
   const { data: profile, isLoading, } = useQuery({
     queryKey: ['profile'],
@@ -99,6 +108,7 @@ const Navbar = () => {
         : "bg-[#0f172a] py-4"
         }`}
     >
+      <Toaster position="top-center" reverseOrder={false} />
       <div className="container px-6 mx-auto">
         <div className="flex justify-between items-center">
           <div className="flex items-center space-x-2">
@@ -260,10 +270,7 @@ const Navbar = () => {
                         </NavLink>
                         <hr className="border-gray-50 mx-2" />
                         <button
-                          onClick={() => {
-                            logOut();
-                            setIsDropdownOpen(false);
-                          }}
+                          onClick={logout}
                           className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors"
                         >
                           <LogOut className="w-4 h-4" />

@@ -29,7 +29,6 @@ const AddProperty = () => {
   };
 
   const onSubmit = async (data) => {
-    console.log(data);
     setIsLoading(true);
     const formData = new FormData();
 
@@ -124,7 +123,8 @@ const AddProperty = () => {
                   <option value="house">House</option>
                   <option value="flat">Flat</option>
                   <option value="office">Office</option>
-                  <option value="villa">Villa</option>
+                  <option value="villa">Shop</option>
+                  <option value="villa">Service</option>
                 </select>
               </div>
               <div>

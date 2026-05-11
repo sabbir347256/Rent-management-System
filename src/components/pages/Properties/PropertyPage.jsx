@@ -17,10 +17,13 @@ const PropertyPage = () => {
   const handleFilter = (filterData) => {
     const params = {};
 
-    if (filterData.search) params.searchTerm = filterData.search;
-    if (filterData.type && filterData.type !== "All Types") params.propertyType = filterData.type.toLowerCase();
-    if (filterData.bedrooms) params.bedroom = filterData.bedrooms;
+    const finalSearch = filterData.search || filterData.areaSearch;
+    if (finalSearch) params.searchTerm = finalSearch;
 
+    if (filterData.type && filterData.type !== "All Types")
+      params.propertyType = filterData.type.toLowerCase();
+
+    if (filterData.bedrooms) params.bedroom = filterData.bedrooms;
     if (filterData.minPrice) params.minPrice = filterData.minPrice;
     if (filterData.maxPrice) params.maxPrice = filterData.maxPrice;
 
