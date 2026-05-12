@@ -18,7 +18,7 @@ const AlltypeProperties = () => {
     return () => clearTimeout(delayDebounceFn);
   }, [inputValue]);
 
-  const { data: response, isLoading } = useQuery({
+  const { data: response, isLoading, refetch } = useQuery({
     queryKey: ["propertyApprovals", searchTerm, page],
     queryFn: async () => {
       const token = localStorage.getItem("accessToken");
@@ -50,6 +50,8 @@ const AlltypeProperties = () => {
           body: JSON.stringify({ isApproved }),
         },
       );
+
+      refetch();
 
       if (!response.ok) throw new Error("Failed to update status");
       return response.json();

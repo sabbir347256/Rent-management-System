@@ -39,6 +39,8 @@ import { Toaster } from "react-hot-toast";
 const AdminLayout = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [profileData, setProfileData] = useState(null);
+    const [loading, setLoading] = useState(true);
+
 
   const logout = useLogout();
 
@@ -66,7 +68,7 @@ const AdminLayout = () => {
         });
       }
     } catch (error) {
-      toast.error("Failed to load profile");
+      ''
     } finally {
       setLoading(false);
     }

@@ -123,22 +123,7 @@ const Login = () => {
             </button>
           </form>
 
-          <div className="relative my-8">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-slate-100"></div>
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-white px-4 text-slate-400 font-medium">
-                Or continue with
-              </span>
-            </div>
-          </div>
-
-          <div className="grid">
-            <button className="flex items-center justify-center gap-2 py-3 border border-slate-200 rounded-2xl hover:bg-slate-50 transition-colors font-semibold text-slate-700">
-              <BsGoogle className="w-5 h-5 text-red-500" /> Google
-            </button>
-          </div>
+         
         </div>
 
         <div className="p-6 bg-slate-50 border-t border-slate-100 text-center">

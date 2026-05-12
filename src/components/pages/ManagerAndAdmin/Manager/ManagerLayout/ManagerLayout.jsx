@@ -37,7 +37,7 @@ import { Toaster } from "react-hot-toast";
 const ManagerLayout = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [profileData, setProfileData] = useState(null);
-  const [isloading,setLoading] = useState();
+  const [isloading, setLoading] = useState();
 
   const logout = useLogout();
 
@@ -65,7 +65,7 @@ const ManagerLayout = () => {
         });
       }
     } catch (error) {
-      toast.error("Failed to load profile");
+      ''
     } finally {
       setLoading(false);
     }
@@ -74,8 +74,6 @@ const ManagerLayout = () => {
   useEffect(() => {
     fetchProfile();
   }, []);
-
-  console.log(profileData)
 
 
   useEffect(() => {

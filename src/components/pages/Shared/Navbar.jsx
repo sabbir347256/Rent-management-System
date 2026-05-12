@@ -149,7 +149,7 @@ const Navbar = () => {
                 className={`relative p-2 rounded-full transition-all ${showPopup ? "bg-gray-100" : "hover:bg-gray-50"
                   }`}
               >
-                <MessageCircle className="w-6 h-6 text-gray-600" />
+                <MessageCircle className="w-6 h-6  text-green-600" />
                 {unreadCount > 0 && (
                   <span className="absolute top-0 right-0 bg-red-500 text-white text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center border-2 border-white">
                     {unreadCount}

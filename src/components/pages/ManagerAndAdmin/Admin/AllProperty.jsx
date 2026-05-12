@@ -19,7 +19,7 @@ const AllProperty = () => {
     return () => clearTimeout(delayDebounceFn);
   }, [inputValue]);
 
-  const { data: response, isLoading } = useQuery({
+  const { data: response, isLoading, refetch } = useQuery({
     queryKey: ["propertyApprovals", searchTerm, page],
     queryFn: async () => {
       const token = localStorage.getItem("accessToken");
@@ -37,6 +37,9 @@ const AllProperty = () => {
     },
   });
 
+  refetch();
+
+
   const updateStatusMutation = useMutation({
     mutationFn: async ({ id, status }) => {
       const token = localStorage.getItem("accessToken");
@@ -51,6 +54,7 @@ const AllProperty = () => {
           body: JSON.stringify({ isApproved: status === "true" }),
         },
       );
+      refetch();
       if (!response.ok) throw new Error("Update failed");
       return response.json();
     },
@@ -117,11 +121,10 @@ const AllProperty = () => {
                 </td>
                 <td className="px-6 py-4">
                   <span
-                    className={`px-3 py-1 rounded-full text-xs font-bold ${
-                      item.isApproved
+                    className={`px-3 py-1 rounded-full text-xs font-bold ${item.isApproved
                         ? "bg-green-100 text-green-700"
                         : "bg-red-100 text-red-700"
-                    }`}
+                      }`}
                   >
                     {item.isApproved ? "Approved" : "Pending"}
                   </span>
